@@ -6,9 +6,16 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@vercel/postgres": "^0.10.0",
+    "dotenv": "^17.1.0",
+    "drizzle-orm": "^0.44.2",
     "next": "15.3.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
@@ -24,6 +31,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "conventional-changelog-conventionalcommits": "^9.0.0",
+    "drizzle-kit": "^0.31.4",
     "eslint": "^9",
     "eslint-config-next": "15.3.5",
     "tailwindcss": "^4",
