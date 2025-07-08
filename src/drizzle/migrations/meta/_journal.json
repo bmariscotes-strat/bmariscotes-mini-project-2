@@ -8,6 +8,13 @@
       "when": 1751954261317,
       "tag": "0000_fuzzy_patch",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1751956652087,
+      "tag": "0001_vengeful_quasar",
+      "breakpoints": true
     }
   ]
 }

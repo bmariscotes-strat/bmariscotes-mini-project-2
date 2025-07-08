@@ -84,3 +84,14 @@ export const reactions = pgTable("reactions", {
   target_id: integer("target_id").notNull(), // ID of target entity (post/comment/reply)
   created_at: timestamp("created_at").defaultNow(),
 });
+
+// Post Images
+export const postImages = pgTable("post_images", {
+  id: serial("id").primaryKey(),
+  post_id: integer("post_id")
+    .references(() => posts.id, { onDelete: "cascade" })
+    .notNull(),
+  image_url: varchar("image_url", { length: 512 }).notNull(),
+  alt_text: varchar("alt_text", { length: 255 }),
+  created_at: timestamp("created_at").defaultNow(),
+});
