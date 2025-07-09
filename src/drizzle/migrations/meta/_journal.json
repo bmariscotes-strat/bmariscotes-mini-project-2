@@ -15,6 +15,13 @@
       "when": 1751956652087,
       "tag": "0001_vengeful_quasar",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1752054147980,
+      "tag": "0002_flowery_agent_zero",
+      "breakpoints": true
     }
   ]
 }

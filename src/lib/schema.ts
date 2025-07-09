@@ -92,6 +92,5 @@ export const postImages = pgTable("post_images", {
     .references(() => posts.id, { onDelete: "cascade" })
     .notNull(),
   image_url: varchar("image_url", { length: 512 }).notNull(),
-  alt_text: varchar("alt_text", { length: 255 }),
   created_at: timestamp("created_at").defaultNow(),
 });

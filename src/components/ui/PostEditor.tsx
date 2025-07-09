@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
-import axios from "axios";
 import {
   Bold,
   Italic,
@@ -13,13 +12,14 @@ import {
   Image as ImageIcon,
   Eraser,
 } from "lucide-react";
+import { insertPostWithImages } from "@/lib/actions/posts";
 
 export default function PostEditor() {
   const [title, setTitle] = useState("");
   const [uploading, setUploading] = useState(false);
   const [pendingImages, setPendingImages] = useState<
     { file: File; tempUrl: string }[]
-  >([]); // Store images to upload later
+  >([]);
 
   const editor = useEditor({
     extensions: [StarterKit, Image],
@@ -30,13 +30,8 @@ export default function PostEditor() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Create a temporary URL for preview
     const tempUrl = URL.createObjectURL(file);
-
-    // Add image to editor with temporary URL
     editor?.chain().focus().setImage({ src: tempUrl }).run();
-
-    // Store the file and temp URL for later upload
     setPendingImages((prev) => [...prev, { file, tempUrl }]);
   };
 
@@ -46,16 +41,19 @@ export default function PostEditor() {
       formData.append("file", file);
       formData.append("upload_preset", "post_images");
 
-      const { data } = await axios.post(
+      const res = await fetch(
         "https://api.cloudinary.com/v1_1/dphcpekk1/image/upload",
-        formData
+        {
+          method: "POST",
+          body: formData,
+        }
       );
 
+      const data = await res.json();
       return { tempUrl, cloudinaryUrl: data.secure_url };
     });
 
-    const uploadResults = await Promise.all(uploadPromises);
-    return uploadResults;
+    return await Promise.all(uploadPromises);
   };
 
   const handleSubmit = async () => {
@@ -66,48 +64,36 @@ export default function PostEditor() {
     try {
       let content = editor.getHTML();
 
-      // Only upload images if there are pending images
-      if (pendingImages.length > 0) {
-        // Upload all pending images first
-        const uploadResults = await uploadPendingImages();
+      const uploadResults = await uploadPendingImages();
 
-        // Replace temporary URLs with Cloudinary URLs in the editor content
-        uploadResults.forEach(({ tempUrl, cloudinaryUrl }) => {
-          content = content.replace(tempUrl, cloudinaryUrl);
-        });
-      }
+      uploadResults.forEach(({ tempUrl, cloudinaryUrl }) => {
+        content = content.replace(tempUrl, cloudinaryUrl);
+      });
 
-      // Extract image URLs from content
       const imageUrls: string[] = [];
       const imgRegex = /<img[^>]+src="([^"]+)"/g;
       let match;
 
       while ((match = imgRegex.exec(content)) !== null) {
         const src = match[1];
-        // Only include Cloudinary URLs, not temporary blob URLs
         if (src.includes("cloudinary.com")) {
           imageUrls.push(src);
         }
       }
 
-      // Submit the post with updated image URLs
-      await axios.post("/api/posts", {
+      // Server Action call
+      await insertPostWithImages(
         title,
         content,
-        userId: 1, // TODO: Replace with actual user ID from auth
-        imageUrls,
-      });
+        1, // replace with actual user ID later
+        imageUrls
+      );
 
       alert("Post created!");
 
-      // Clean up
       setTitle("");
       editor.commands.setContent("<p></p>");
-
-      // Revoke temporary URLs to free memory
-      pendingImages.forEach(({ tempUrl }) => {
-        URL.revokeObjectURL(tempUrl);
-      });
+      pendingImages.forEach(({ tempUrl }) => URL.revokeObjectURL(tempUrl));
       setPendingImages([]);
     } catch (error) {
       console.error("Error creating post:", error);
@@ -137,7 +123,6 @@ export default function PostEditor() {
           >
             <Bold size={16} />
           </button>
-
           <button
             onClick={() => editor.chain().focus().toggleItalic().run()}
             className={`p-2 rounded hover:bg-gray-200 ${
@@ -146,7 +131,6 @@ export default function PostEditor() {
           >
             <Italic size={16} />
           </button>
-
           <button
             onClick={() =>
               editor.chain().focus().toggleHeading({ level: 2 }).run()
@@ -159,7 +143,6 @@ export default function PostEditor() {
           >
             <Heading2 size={16} />
           </button>
-
           <button
             onClick={() => editor.chain().focus().toggleBulletList().run()}
             className={`p-2 rounded hover:bg-gray-200 ${
@@ -168,7 +151,6 @@ export default function PostEditor() {
           >
             <List size={16} />
           </button>
-
           <label className="p-2 rounded hover:bg-gray-200 cursor-pointer flex items-center gap-1">
             <ImageIcon size={16} />
             <input
@@ -177,7 +159,6 @@ export default function PostEditor() {
               className="hidden"
             />
           </label>
-
           <button
             onClick={() =>
               editor.chain().focus().unsetAllMarks().clearNodes().run()
