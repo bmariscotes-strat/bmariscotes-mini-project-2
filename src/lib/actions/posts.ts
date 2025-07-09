@@ -96,7 +96,7 @@ export async function insertPostWithImages(
  */
 export async function getAllPosts() {
   try {
-    const postsData = await db.select().from(posts);
+    const postsData = await db.select().from(posts).orderBy(posts.created_at);
     return postsData;
   } catch (error) {
     console.error("Error fetching posts:", error);
@@ -118,6 +118,28 @@ export async function getPostById(postId: number) {
     return post[0];
   } catch (error) {
     console.error("Error fetching post:", error);
+    throw new Error(
+      `Failed to fetch post: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`
+    );
+  }
+}
+
+/**
+ * Read: Get a single post by slug.
+ */
+export async function getPostBySlug(slug: string) {
+  try {
+    const post = await db.select().from(posts).where(eq(posts.slug, slug));
+
+    if (!post.length) {
+      return null;
+    }
+
+    return post[0];
+  } catch (error) {
+    console.error("Error fetching post by slug:", error);
     throw new Error(
       `Failed to fetch post: ${
         error instanceof Error ? error.message : "Unknown error"
