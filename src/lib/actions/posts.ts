@@ -1,8 +1,8 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { posts, postImages } from "@/lib/schema";
-import { eq } from "drizzle-orm";
+import { posts, postImages, comments, reactions } from "@/lib/schema";
+import { eq, and, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import slugify from "slugify";
 
@@ -50,9 +50,10 @@ export async function insertPostWithImages(
     if (imageUrls.length > 0) {
       console.log("Inserting images:", imageUrls);
 
-      const imagesToInsert = imageUrls.map((url) => ({
+      const imagesToInsert = imageUrls.map((url, index) => ({
         post_id: postId,
         image_url: url,
+        display_order: index,
       }));
 
       await db.insert(postImages).values(imagesToInsert);
@@ -131,20 +132,58 @@ export async function getPostById(postId: number) {
  */
 export async function getPostBySlug(slug: string) {
   try {
+    console.log("getPostBySlug - searching for slug:", slug);
+    console.log("getPostBySlug - slug type:", typeof slug);
+    console.log("getPostBySlug - slug length:", slug.length);
+
     const post = await db.select().from(posts).where(eq(posts.slug, slug));
 
-    if (!post.length) {
+    console.log("getPostBySlug - query executed successfully");
+    console.log("getPostBySlug - raw result:", post);
+    console.log("getPostBySlug - result length:", post.length);
+
+    if (!post || post.length === 0) {
+      console.log("getPostBySlug - no post found, returning null");
       return null;
     }
 
+    console.log("getPostBySlug - returning post:", post[0]);
     return post[0];
   } catch (error) {
-    console.error("Error fetching post by slug:", error);
-    throw new Error(
-      `Failed to fetch post: ${
-        error instanceof Error ? error.message : "Unknown error"
-      }`
+    console.error("getPostBySlug - Database error:", error);
+    console.error("getPostBySlug - Error details:", {
+      message: error instanceof Error ? error.message : "Unknown error",
+      stack: error instanceof Error ? error.stack : undefined,
+      slug,
+      errorType: typeof error,
+    });
+
+    // Don't throw here - return null to indicate not found
+    // This prevents the NEXT_HTTP_ERROR_FALLBACK error
+    return null;
+  }
+}
+
+/**
+ * Debug: Search posts by slug pattern
+ */
+export async function searchPostsBySlug(slugPattern: string) {
+  try {
+    console.log("searchPostsBySlug - searching for pattern:", slugPattern);
+
+    // Get all posts and filter by slug pattern
+    const allPosts = await db.select().from(posts);
+    const matchingPosts = allPosts.filter(
+      (post) =>
+        post.slug.includes(slugPattern) ||
+        post.title.toLowerCase().includes(slugPattern.toLowerCase())
     );
+
+    console.log("searchPostsBySlug - found posts:", matchingPosts.length);
+    return matchingPosts;
+  } catch (error) {
+    console.error("searchPostsBySlug - Database error:", error);
+    return [];
   }
 }
 
@@ -153,38 +192,40 @@ export async function getPostBySlug(slug: string) {
  */
 export async function updatePost(
   postId: number,
-  updatedTitle: string,
-  updatedContent: string,
+  title: string,
+  content: string,
   imageUrls: string[]
 ) {
   try {
-    const baseSlug = slugify(updatedTitle, { lower: true, strict: true });
-    const slug = `${baseSlug}-${Date.now()}`;
-
-    const updateResult = await db
+    // Update the post - keep the original slug
+    await db
       .update(posts)
       .set({
-        title: updatedTitle.trim(),
-        slug,
-        content: updatedContent,
+        title: title.trim(),
+        content,
+        updated_at: new Date(),
       })
       .where(eq(posts.id, postId));
 
-    // Remove existing images first
+    // Delete existing post images
     await db.delete(postImages).where(eq(postImages.post_id, postId));
 
-    // Insert new images
+    // Insert new images if any
     if (imageUrls.length > 0) {
-      await db.insert(postImages).values(
-        imageUrls.map((url) => ({
-          post_id: postId,
-          image_url: url,
-        }))
-      );
+      const imagesToInsert = imageUrls.map((url, index) => ({
+        post_id: postId,
+        image_url: url,
+        display_order: index,
+      }));
+
+      await db.insert(postImages).values(imagesToInsert);
     }
 
+    // Revalidate relevant pages
     revalidatePath("/blogs");
-    return updateResult;
+    revalidatePath(`/blogs/[slug]`, "page");
+
+    return { success: true };
   } catch (error) {
     console.error("Error updating post:", error);
     throw new Error(
@@ -196,18 +237,50 @@ export async function updatePost(
 }
 
 /**
- * Delete: Remove a post and its images.
+ * Delete: Remove a post and all associated data.
  */
 export async function deletePost(postId: number) {
   try {
-    // Delete images first
+    // First, get all comment IDs for this post to delete their reactions
+    const postComments = await db
+      .select({ id: comments.id })
+      .from(comments)
+      .where(eq(comments.post_id, postId));
+
+    const commentIds = postComments.map((comment) => comment.id);
+
+    // Delete all reactions for this post
+    await db
+      .delete(reactions)
+      .where(
+        and(eq(reactions.target_type, "post"), eq(reactions.target_id, postId))
+      );
+
+    // Delete all reactions for comments on this post
+    if (commentIds.length > 0) {
+      await db
+        .delete(reactions)
+        .where(
+          and(
+            eq(reactions.target_type, "comment"),
+            inArray(reactions.target_id, commentIds)
+          )
+        );
+    }
+
+    // Delete all comments on this post
+    await db.delete(comments).where(eq(comments.post_id, postId));
+
+    // Delete all post images
     await db.delete(postImages).where(eq(postImages.post_id, postId));
 
-    // Then delete the post
-    const deleteResult = await db.delete(posts).where(eq(posts.id, postId));
+    // Finally, delete the post itself
+    await db.delete(posts).where(eq(posts.id, postId));
 
+    // Revalidate the blogs page to update the post list
     revalidatePath("/blogs");
-    return deleteResult;
+
+    return { success: true };
   } catch (error) {
     console.error("Error deleting post:", error);
     throw new Error(

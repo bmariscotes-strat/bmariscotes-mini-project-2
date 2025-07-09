@@ -10,6 +10,7 @@ import { notFound } from "next/navigation";
 import ReactionButton from "@/components/ui/ReactionButton";
 import CommentForm from "@/components/ui/CommentForm";
 import Comment from "@/components/ui/Comment";
+import PostActions from "@/components/ui/PostActions";
 
 interface BlogPostPageProps {
   params: {
@@ -32,6 +33,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     // TODO: Replace with actual user ID from your auth system
     const userId = 1; // This should come from your authentication system
     const userReaction = await getUserReaction(userId, "post", post.id);
+
+    // Check if current user is the author of the post
+    const isAuthor = post.user_id === userId;
 
     // Get replies for each comment and their reaction data
     const commentsWithReplies = await Promise.all(
@@ -83,9 +87,22 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
         {/* Post Header */}
         <header className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            {post.title}
-          </h1>
+          <div className="flex items-start justify-between mb-4">
+            <h1 className="text-4xl font-bold text-gray-900 flex-1">
+              {post.title}
+            </h1>
+
+            {/* Edit and Delete buttons - only show if user is the author */}
+            {isAuthor && (
+              <div className="ml-4 flex-shrink-0">
+                <PostActions
+                  postId={post.id}
+                  postSlug={post.slug}
+                  postTitle={post.title}
+                />
+              </div>
+            )}
+          </div>
 
           <div className="flex items-center justify-between">
             <div className="flex items-center text-gray-600 space-x-4">
