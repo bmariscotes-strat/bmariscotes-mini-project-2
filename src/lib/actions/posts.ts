@@ -16,36 +16,78 @@ export async function insertPostWithImages(
   imageUrls: string[]
 ) {
   try {
-    const slug = slugify(title, { lower: true, strict: true });
+    console.log("Attempting to create post with:", {
+      title,
+      userId,
+      imageUrls,
+    });
 
+    // Create a unique slug - add timestamp to avoid duplicates
+    const baseSlug = slugify(title, { lower: true, strict: true });
+    const slug = `${baseSlug}-${Date.now()}`;
+
+    console.log("Generated slug:", slug);
+
+    // Insert the post
     const newPost = await db
       .insert(posts)
       .values({
-        title,
+        title: title.trim(),
         slug,
         content,
         user_id: userId,
       })
       .returning({ id: posts.id });
 
-    const postId = newPost[0]?.id;
-    if (!postId) throw new Error("Failed to create post");
+    console.log("Post inserted:", newPost);
 
+    const postId = newPost[0]?.id;
+    if (!postId) {
+      throw new Error("Failed to create post - no ID returned");
+    }
+
+    // Insert images if any
     if (imageUrls.length > 0) {
+      console.log("Inserting images:", imageUrls);
+
       const imagesToInsert = imageUrls.map((url) => ({
         post_id: postId,
         image_url: url,
       }));
 
       await db.insert(postImages).values(imagesToInsert);
+      console.log("Images inserted successfully");
     }
 
     revalidatePath("/blogs");
+    console.log("Post created successfully with ID:", postId);
 
     return postId;
   } catch (error) {
-    console.error("Error inserting post:", error);
-    throw error;
+    console.error("Detailed error inserting post:", error);
+
+    // Provide more specific error messages
+    if (error instanceof Error) {
+      if (error.message.includes("duplicate key")) {
+        throw new Error(
+          "A post with this title already exists. Please choose a different title."
+        );
+      }
+      if (error.message.includes("violates not-null constraint")) {
+        throw new Error(
+          "Required fields are missing. Please check your input."
+        );
+      }
+      if (error.message.includes("violates foreign key constraint")) {
+        throw new Error("Invalid user ID provided.");
+      }
+    }
+
+    throw new Error(
+      `Failed to create post: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`
+    );
   }
 }
 
@@ -53,19 +95,35 @@ export async function insertPostWithImages(
  * Read: Get all posts with their images.
  */
 export async function getAllPosts() {
-  const postsData = await db.select().from(posts);
-  return postsData;
+  try {
+    const postsData = await db.select().from(posts);
+    return postsData;
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+    throw new Error("Failed to fetch posts");
+  }
 }
 
 /**
  * Read: Get a single post by ID.
  */
 export async function getPostById(postId: number) {
-  const post = await db.select().from(posts).where(eq(posts.id, postId));
+  try {
+    const post = await db.select().from(posts).where(eq(posts.id, postId));
 
-  if (!post.length) throw new Error("Post not found");
+    if (!post.length) {
+      throw new Error("Post not found");
+    }
 
-  return post[0];
+    return post[0];
+  } catch (error) {
+    console.error("Error fetching post:", error);
+    throw new Error(
+      `Failed to fetch post: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`
+    );
+  }
 }
 
 /**
@@ -77,42 +135,63 @@ export async function updatePost(
   updatedContent: string,
   imageUrls: string[]
 ) {
-  const slug = slugify(updatedTitle, { lower: true, strict: true });
+  try {
+    const baseSlug = slugify(updatedTitle, { lower: true, strict: true });
+    const slug = `${baseSlug}-${Date.now()}`;
 
-  const updateResult = await db
-    .update(posts)
-    .set({
-      title: updatedTitle,
-      slug,
-      content: updatedContent,
-    })
-    .where(eq(posts.id, postId));
+    const updateResult = await db
+      .update(posts)
+      .set({
+        title: updatedTitle.trim(),
+        slug,
+        content: updatedContent,
+      })
+      .where(eq(posts.id, postId));
 
-  // Remove existing images first
-  await db.delete(postImages).where(eq(postImages.post_id, postId));
+    // Remove existing images first
+    await db.delete(postImages).where(eq(postImages.post_id, postId));
 
-  // Insert new images
-  if (imageUrls.length > 0) {
-    await db.insert(postImages).values(
-      imageUrls.map((url) => ({
-        post_id: postId,
-        image_url: url,
-      }))
+    // Insert new images
+    if (imageUrls.length > 0) {
+      await db.insert(postImages).values(
+        imageUrls.map((url) => ({
+          post_id: postId,
+          image_url: url,
+        }))
+      );
+    }
+
+    revalidatePath("/blogs");
+    return updateResult;
+  } catch (error) {
+    console.error("Error updating post:", error);
+    throw new Error(
+      `Failed to update post: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`
     );
   }
-
-  return updateResult;
 }
 
 /**
  * Delete: Remove a post and its images.
  */
 export async function deletePost(postId: number) {
-  // Delete images first
-  await db.delete(postImages).where(eq(postImages.post_id, postId));
+  try {
+    // Delete images first
+    await db.delete(postImages).where(eq(postImages.post_id, postId));
 
-  // Then delete the post
-  const deleteResult = await db.delete(posts).where(eq(posts.id, postId));
+    // Then delete the post
+    const deleteResult = await db.delete(posts).where(eq(posts.id, postId));
 
-  return deleteResult;
+    revalidatePath("/blogs");
+    return deleteResult;
+  } catch (error) {
+    console.error("Error deleting post:", error);
+    throw new Error(
+      `Failed to delete post: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`
+    );
+  }
 }
