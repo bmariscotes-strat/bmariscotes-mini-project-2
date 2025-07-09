@@ -20,6 +20,7 @@
     "@vercel/postgres": "^0.10.0",
     "axios": "^1.10.0",
     "cloudinary": "^2.7.0",
+    "date-fns": "^4.1.0",
     "dotenv": "^17.1.0",
     "drizzle-orm": "^0.44.2",
     "lucide-react": "^0.525.0",

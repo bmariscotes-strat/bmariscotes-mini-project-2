@@ -1,7 +1,10 @@
+// app/blogs/page.tsx
 import { getAllPosts } from "@/lib/actions/posts";
+import { getPostStats } from "@/lib/actions/reactions";
 import Link from "next/link";
 import PostEditor from "@/components/ui/PostEditor";
 import Image from "next/image";
+import { MessageCircle, ChevronUp, ChevronDown } from "lucide-react";
 
 // Helper function to extract plain text from HTML content
 function extractPlainText(html: string): string {
@@ -34,6 +37,14 @@ export default async function Blog() {
     return dateB - dateA; // descending order
   });
 
+  // Get stats for each post
+  const postsWithStats = await Promise.all(
+    sortedPosts.map(async (post) => {
+      const stats = await getPostStats(post.id);
+      return { ...post, stats };
+    })
+  );
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       {/* Post Editor */}
@@ -43,14 +54,14 @@ export default async function Blog() {
 
       {/* Blog Feed */}
       <div className="space-y-8">
-        {sortedPosts.length === 0 ? (
+        {postsWithStats.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-gray-500 text-lg">
               No posts yet. Create your first post above!
             </p>
           </div>
         ) : (
-          sortedPosts.map((post) => {
+          postsWithStats.map((post) => {
             const firstImage = extractFirstImage(post.content);
             const truncatedContent = truncateContent(post.content);
 
@@ -82,12 +93,51 @@ export default async function Blog() {
                     {truncatedContent}
                   </div>
 
+                  {/* Post Stats */}
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center space-x-4">
+                      {/* Reaction Stats */}
+                      <div className="flex items-center space-x-2">
+                        <div className="flex items-center space-x-1 text-green-600">
+                          <ChevronUp className="w-4 h-4" />
+                          <span className="text-sm font-medium">
+                            {post.stats.upvotes}
+                          </span>
+                        </div>
+                        <div className="flex items-center space-x-1 text-red-600">
+                          <ChevronDown className="w-4 h-4" />
+                          <span className="text-sm font-medium">
+                            {post.stats.downvotes}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Comment Count */}
+                      <div className="flex items-center space-x-1 text-gray-600">
+                        <MessageCircle className="w-4 h-4" />
+                        <span className="text-sm font-medium">
+                          {post.stats.comments}
+                        </span>
+                      </div>
+                    </div>
+
+                    <time className="text-sm text-gray-500">
+                      {post.created_at &&
+                        new Date(post.created_at).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}
+                    </time>
+                  </div>
+
+                  {/* Read More Link */}
                   <div className="flex items-center justify-between">
                     <Link
                       href={`/blogs/${post.slug}`}
                       className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium transition-colors"
                     >
-                      See more
+                      Read more
                       <svg
                         className="ml-1 w-4 h-4"
                         fill="none"
@@ -102,15 +152,6 @@ export default async function Blog() {
                         />
                       </svg>
                     </Link>
-
-                    <time className="text-sm text-gray-500">
-                      {post.created_at &&
-                        new Date(post.created_at).toLocaleDateString("en-US", {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })}
-                    </time>
                   </div>
                 </div>
               </article>
