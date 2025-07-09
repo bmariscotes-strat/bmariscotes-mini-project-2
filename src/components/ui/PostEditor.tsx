@@ -8,6 +8,7 @@ import {
   Bold,
   Italic,
   Heading2,
+  Heading3,
   List,
   Image as ImageIcon,
   Eraser,
@@ -18,6 +19,7 @@ import {
 } from "lucide-react";
 import NextImage from "next/image";
 import { insertPostWithImages } from "@/lib/actions/posts";
+import Placeholder from "@tiptap/extension-placeholder";
 
 export default function PostEditor() {
   const [title, setTitle] = useState("");
@@ -33,14 +35,28 @@ export default function PostEditor() {
 
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      StarterKit.configure({
+        bulletList: {
+          HTMLAttributes: {
+            class: "bullet-list",
+          },
+        },
+        heading: {
+          levels: [1, 2, 3, 4, 5, 6],
+        },
+      }),
       Image.configure({
         HTMLAttributes: {
           class: "max-w-full h-auto rounded-lg shadow-sm",
         },
       }),
+      Placeholder.configure({
+        placeholder: "Start writing your post...",
+        showOnlyWhenEditable: true,
+        showOnlyCurrent: false,
+      }),
     ],
-    content: "<p>Start writing your post...</p>",
+    content: "", // Change this to empty string instead of the paragraph
     editorProps: {
       attributes: {
         class:
@@ -48,7 +64,6 @@ export default function PostEditor() {
       },
     },
   });
-
   const generateId = () => Math.random().toString(36).substr(2, 9);
 
   const showToast = (message: string, type: "success" | "error") => {
@@ -165,7 +180,7 @@ export default function PostEditor() {
       showToast("Post created successfully!", "success");
 
       setTitle("");
-      editor.commands.setContent("<p>Start writing your post...</p>");
+      editor.commands.setContent("");
       pendingImages.forEach(({ tempUrl }) => URL.revokeObjectURL(tempUrl));
       setPendingImages([]);
     } catch (error) {
@@ -252,6 +267,8 @@ export default function PostEditor() {
               >
                 <Italic size={18} />
               </button>
+
+              {/* Heading 2 */}
               <button
                 onClick={() =>
                   editor.chain().focus().toggleHeading({ level: 2 }).run()
@@ -261,10 +278,42 @@ export default function PostEditor() {
                     ? "bg-blue-500 text-white hover:bg-blue-600"
                     : ""
                 }`}
-                title="Heading"
+                title="Heading 2"
               >
                 <Heading2 size={18} />
               </button>
+
+              {/* Heading 3 */}
+              <button
+                onClick={() =>
+                  editor.chain().focus().toggleHeading({ level: 3 }).run()
+                }
+                className={`p-2 rounded-md hover:bg-gray-200 transition-colors ${
+                  editor.isActive("heading", { level: 3 })
+                    ? "bg-blue-500 text-white hover:bg-blue-600"
+                    : ""
+                }`}
+                title="Heading 3"
+              >
+                <Heading3 size={18} />
+              </button>
+
+              {/* Heading 4 */}
+              <button
+                onClick={() =>
+                  editor.chain().focus().toggleHeading({ level: 4 }).run()
+                }
+                className={`p-2 rounded-md hover:bg-gray-200 transition-colors ${
+                  editor.isActive("heading", { level: 4 })
+                    ? "bg-blue-500 text-white hover:bg-blue-600"
+                    : ""
+                }`}
+                title="Heading 4"
+              >
+                <span className="text-sm font-semibold">H4</span>
+              </button>
+
+              {/* Bullet List */}
               <button
                 onClick={() => editor.chain().focus().toggleBulletList().run()}
                 className={`p-2 rounded-md hover:bg-gray-200 transition-colors ${
@@ -276,6 +325,7 @@ export default function PostEditor() {
               >
                 <List size={18} />
               </button>
+
               <label className="p-2 rounded-md hover:bg-gray-200 cursor-pointer flex items-center gap-1 transition-colors text-gray-700 hover:text-gray-900">
                 <ImageIcon size={18} />
                 <input
