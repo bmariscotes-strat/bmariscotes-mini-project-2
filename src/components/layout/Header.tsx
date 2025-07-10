@@ -25,7 +25,7 @@ export default function Header() {
           <div className="w-10 h-10 bg-primary-500 rounded-lg flex items-center justify-center group-hover:bg-primary-600 transition-colors">
             <Image src="/branding/logo.png" alt="Logo" width={60} height={60} />
           </div>
-          <span className="text-2xl font-bold text-primary group-hover:text-primary-700 transition-colors">
+          <span className="text-2xl baskervville font-bold text-primary group-hover:text-primary-700 transition-colors">
             Wryte.
           </span>
         </Link>

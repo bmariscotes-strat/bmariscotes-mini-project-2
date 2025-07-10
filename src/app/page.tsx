@@ -36,7 +36,7 @@ export default function LandingPage() {
 
             {/* Right Side - Content */}
             <div className="text-center lg:text-center">
-              <h1 className="text-5xl sm:text-6xl lg:text-8xl font-bold text-primary mb-6 animate-fade-in">
+              <h1 className="baskervville text-5xl sm:text-6xl lg:text-8xl font-bold text-primary mb-6 animate-fade-in">
                 Wryte.
               </h1>
 
