@@ -5,6 +5,7 @@ import Link from "next/link";
 import PostEditor from "@/components/ui/PostEditor";
 import Image from "next/image";
 import { MessageCircle, ChevronUp, ChevronDown } from "lucide-react";
+import { getUserById } from "@/lib/actions/users";
 
 // Helper function to extract plain text from HTML content
 function extractPlainText(html: string): string {
@@ -15,20 +16,28 @@ function extractPlainText(html: string): string {
 }
 
 // Helper function to truncate content
-function truncateContent(content: string, maxLength: number = 200): string {
+function truncateContent(content: string, maxLength: number = 700): string {
   const plainText = extractPlainText(content);
   if (plainText.length <= maxLength) return plainText;
   return plainText.substring(0, maxLength) + "...";
 }
 
-// Helper function to extract first image from HTML content
-function extractFirstImage(html: string): string | null {
-  const imgMatch = html.match(/<img[^>]+src="([^"]+)"/);
-  return imgMatch ? imgMatch[1] : null;
+// Helper function to extract all images from HTML content
+function extractAllImages(html: string): string[] {
+  const imgMatches = html.match(/<img[^>]+src="([^"]+)"/g);
+  if (!imgMatches) return [];
+
+  return imgMatches
+    .map((match) => {
+      const srcMatch = match.match(/src="([^"]+)"/);
+      return srcMatch ? srcMatch[1] : "";
+    })
+    .filter(Boolean);
 }
 
 export default async function Blog() {
   const posts = await getAllPosts();
+  const user = await getUserById(1);
 
   // Sort posts latest to oldest
   const sortedPosts = posts.sort((a, b) => {
@@ -46,112 +55,162 @@ export default async function Blog() {
   );
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
-      {/* Post Editor */}
-      <div className="mb-12">
-        <PostEditor />
-      </div>
+    <div className="max-w-5xl mx-auto px-4 py-8">
+      {/* Floating Post Editor */}
+      <PostEditor />
 
       {/* Blog Feed */}
-      <div className="space-y-8">
+      <div className="space-y-6">
+        <div className="bg-primary/5 border border-primary/30 rounded-md p-6 text-center space-y-2">
+          <h1 className="text-4xl font-extrabold text-primary tracking-tight">
+            Hello, Wryter {user?.name || "Guest"}!
+          </h1>
+          <p className="text-gray-600 text-base">
+            Unleash your thoughts, shape your story.
+          </p>
+        </div>
+
         {postsWithStats.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-gray-500 text-lg">
-              No posts yet. Create your first post above!
+              No posts yet. Create your first post!
             </p>
           </div>
         ) : (
-          postsWithStats.map((post) => {
-            const firstImage = extractFirstImage(post.content);
+          postsWithStats.map((post, index) => {
+            const images = extractAllImages(post.content);
             const truncatedContent = truncateContent(post.content);
+            const isNewPost = index === 0; // First post is the newest
 
             return (
               <article
                 key={post.id}
-                className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+                className={`bg-white rounded-md  border-gray-100 overflow-hidden transition-all duration-500 ${
+                  isNewPost ? "animate-pulse-glow" : ""
+                }`}
               >
-                {/* Featured Image */}
-                {firstImage && (
-                  <div className="aspect-video w-full overflow-hidden">
-                    <Image
-                      src={firstImage}
-                      alt={post.title}
-                      className="w-full h-full object-cover"
-                      width={1280}
-                      height={720}
-                    />
+                {/* Images Section */}
+                {images.length > 0 && (
+                  <div className="p-4 pb-0">
+                    {images.length === 1 ? (
+                      // Single image
+                      <div className="rounded-xl overflow-hidden">
+                        <Image
+                          src={images[0]}
+                          alt={post.title}
+                          className="w-full h-48 object-cover"
+                          width={600}
+                          height={300}
+                        />
+                      </div>
+                    ) : (
+                      // Multiple images - grid layout
+                      <div
+                        className={`grid gap-2 rounded-xl overflow-hidden ${
+                          images.length === 2
+                            ? "grid-cols-2"
+                            : images.length === 3
+                            ? "grid-cols-3"
+                            : "grid-cols-2"
+                        }`}
+                      >
+                        {images.slice(0, 4).map((image, imgIndex) => (
+                          <div
+                            key={imgIndex}
+                            className={`relative ${
+                              images.length === 3 && imgIndex === 0
+                                ? "col-span-2"
+                                : ""
+                            }`}
+                          >
+                            <Image
+                              src={image}
+                              alt={`${post.title} - ${imgIndex + 1}`}
+                              className="w-full h-32 object-cover"
+                              width={300}
+                              height={200}
+                            />
+                            {imgIndex === 3 && images.length > 4 && (
+                              <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                                <span className="text-white text-lg font-semibold">
+                                  +{images.length - 4}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
 
                 {/* Post Content */}
-                <div className="p-6">
-                  <h2 className="text-2xl font-bold mb-3 text-gray-900 hover:text-blue-600 transition-colors">
-                    <Link href={`/blogs/${post.slug}`}>{post.title}</Link>
+                <div className="p-4">
+                  <h2 className="text-xl font-bold mb-2 text-gray-900 leading-tight">
+                    <Link
+                      href={`/blogs/${post.slug}`}
+                      className="hover:text-blue-600 transition-colors"
+                    >
+                      {post.title}
+                    </Link>
                   </h2>
 
-                  <div className="text-gray-600 mb-4 leading-relaxed">
+                  <div className="text-gray-700 mb-4 leading-relaxed text-sm">
                     {truncatedContent}
                   </div>
 
-                  {/* Post Stats */}
-                  <div className="flex items-center justify-between mb-4">
+                  {/* Post Footer */}
+                  <div className="flex items-center justify-between text-xs text-gray-500 pt-2 border-t border-gray-50">
                     <div className="flex items-center space-x-4">
                       {/* Reaction Stats */}
-                      <div className="flex items-center space-x-2">
-                        <div className="flex items-center space-x-1 text-green-600">
-                          <ChevronUp className="w-4 h-4" />
-                          <span className="text-sm font-medium">
+                      <div className="flex items-center space-x-3">
+                        <div className="flex items-center space-x-1">
+                          <ChevronUp className="w-4 h-4 text-green-500" />
+                          <span className="font-medium">
                             {post.stats.upvotes}
                           </span>
                         </div>
-                        <div className="flex items-center space-x-1 text-red-600">
-                          <ChevronDown className="w-4 h-4" />
-                          <span className="text-sm font-medium">
+                        <div className="flex items-center space-x-1">
+                          <ChevronDown className="w-4 h-4 text-red-500" />
+                          <span className="font-medium">
                             {post.stats.downvotes}
                           </span>
                         </div>
                       </div>
 
                       {/* Comment Count */}
-                      <div className="flex items-center space-x-1 text-gray-600">
-                        <MessageCircle className="w-4 h-4" />
-                        <span className="text-sm font-medium">
+                      <div className="flex items-center space-x-1">
+                        <MessageCircle className="w-4 h-4 text-gray-400" />
+                        <span className="font-medium">
                           {post.stats.comments}
                         </span>
                       </div>
                     </div>
 
-                    <time className="text-sm text-gray-500">
+                    <time className="text-gray-400">
                       {post.created_at &&
                         new Date(post.created_at).toLocaleDateString("en-US", {
-                          year: "numeric",
-                          month: "long",
+                          month: "short",
                           day: "numeric",
+                          year: "numeric",
                         })}
                     </time>
                   </div>
 
-                  {/* Read More Link */}
-                  <div className="flex items-center justify-between">
-                    <Link
-                      href={`/blogs/${post.slug}`}
-                      className="inline-flex items-center text-primary hover:text-blue-800 font-medium transition-colors"
-                    >
-                      Read more
-                      <svg
-                        className="ml-1 w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
+                  {/* Read More */}
+                  <div className="relative mt-6">
+                    {/* Gradient overlay */}
+                    <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-white to-transparent pointer-events-none rounded-b-md" />
+
+                    {/* Expand link */}
+                    <div className="relative z-10 text-center">
+                      <Link
+                        href={`/blogs/${post.slug}`}
+                        className="inline-block text-primary font-medium text-sm hover:text-blue-800 transition-colors"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
-                    </Link>
+                        Expand →
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </article>
