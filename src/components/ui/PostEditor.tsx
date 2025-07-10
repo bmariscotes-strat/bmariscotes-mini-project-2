@@ -56,6 +56,7 @@ export default function PostEditor() {
         showOnlyCurrent: false,
       }),
     ],
+    immediatelyRender: false,
     content: "", // Change this to empty string instead of the paragraph
     editorProps: {
       attributes: {
