@@ -43,13 +43,13 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  --background: #f9f9f9;
+  --foreground: oklch(26.033% 0.00003 271.152);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklab(56.18% 0.03325 -0.13197);
+  --primary: #6d67c1;
   --primary-foreground: oklch(0.985 0 0);
   --secondary: lab(97.49% -5.89 3.89);
   --secondary-foreground: oklch(0.205 0 0);
@@ -79,7 +79,13 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-baskervville);
+}
+
+/* -------- Post Editor  --------  */
+
+.geist {
+  font-family: var(--font-geist) !important;
 }
 
 /* -------- Post Editor  --------  */
@@ -267,4 +273,19 @@ body {
   .btn-large {
     @apply px-6 py-3 text-lg;
   }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out;
 }
