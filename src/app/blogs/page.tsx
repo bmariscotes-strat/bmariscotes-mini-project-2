@@ -77,10 +77,12 @@ export default async function Blog() {
             </p>
           </div>
         ) : (
-          postsWithStats.map((post, index) => {
+          postsWithStats.map((post) => {
             const images = extractAllImages(post.content);
             const truncatedContent = truncateContent(post.content);
-            const isNewPost = index === 0; // First post is the newest
+            const isNewPost =
+              post.created_at &&
+              (Date.now() - new Date(post.created_at).getTime()) / 1000 < 30;
 
             return (
               <article
@@ -198,19 +200,13 @@ export default async function Blog() {
                   </div>
 
                   {/* Read More */}
-                  <div className="relative mt-6">
-                    {/* Gradient overlay */}
-                    <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-white to-transparent pointer-events-none rounded-b-md" />
-
-                    {/* Expand link */}
-                    <div className="relative z-10 text-center">
-                      <Link
-                        href={`/blogs/${post.slug}`}
-                        className="inline-block text-primary font-medium text-sm hover:text-blue-800 transition-colors"
-                      >
-                        Expand →
-                      </Link>
-                    </div>
+                  <div className="mt-3">
+                    <Link
+                      href={`/blogs/${post.slug}`}
+                      className="text-primary hover:text-blue-800 font-medium justify-end text-sm transition-colors"
+                    >
+                      Read more
+                    </Link>
                   </div>
                 </div>
               </article>

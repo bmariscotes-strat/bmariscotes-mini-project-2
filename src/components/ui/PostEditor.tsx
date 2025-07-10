@@ -214,22 +214,27 @@ export default function PostEditor() {
       {/* Floating Action Button */}
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-8 right-8 w-14 h-14 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center justify-center z-40"
+        className="fixed hover:cursor-pointer bottom-8 group right-8 w-14 h-14 bg-primary text-white rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 hover:bg-primary/50 transition-all duration-200 flex items-center justify-center z-40 animate-soft-bobble"
       >
         <PenTool size={24} />
+
+        <span className="absolute -top-10 right-1/2 translate-x-1/2 bg-accent text-white text-xs py-1 px-2 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+          Create New
+          <span className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-full w-0 h-0 border-x-4 border-x-transparent border-t-4 border-t-accent"></span>
+        </span>
       </button>
 
       {/* Backdrop */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-50 backdrop-blur-sm"
+          className="fixed inset-0 bg-black/30 bg-opacity-50 z-50 backdrop-blur-sm"
           onClick={closeEditor}
         />
       )}
 
       {/* Dialog */}
       {isOpen && (
-        <div className="fixed inset-4 md:inset-8 lg:inset-16 xl:inset-24 bg-white rounded-2xl shadow-2xl z-50 overflow-hidden flex flex-col">
+        <div className="fixed inset-4 md:inset-8 lg:inset-16 bg-white rounded-xl z-50 overflow-hidden flex flex-col">
           {/* Toast Notification */}
           {toast.show && (
             <div
@@ -255,9 +260,9 @@ export default function PostEditor() {
           )}
 
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-50 to-purple-50 px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-            <h2 className="text-2xl font-bold text-gray-800">
-              Create New Post
+          <div className=" px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+            <h2 className="text-2xl font-bold text-primary">
+              Create New Wryte
             </h2>
             <button
               onClick={closeEditor}
@@ -438,14 +443,14 @@ export default function PostEditor() {
             <div className="flex justify-end space-x-3">
               <button
                 onClick={closeEditor}
-                className="px-4 py-2 text-gray-700 hover:text-gray-900 transition-colors"
+                className="px-4 py-2 hover:text-gray-500 cursor-pointer transition-colors"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSubmit}
                 disabled={uploading || !title.trim()}
-                className="px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:from-blue-600 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium flex items-center gap-2"
+                className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/80 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium flex items-center gap-2"
               >
                 {uploading ? (
                   <>
