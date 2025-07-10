@@ -4,18 +4,19 @@ import { notFound, redirect } from "next/navigation";
 import EditPostForm from "@/components/ui/EditPostForm";
 
 interface EditPostPageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export default async function EditPostPage({ params }: EditPostPageProps) {
-  console.log("Edit page - received params:", params);
-  console.log("Edit page - received slug:", params.slug);
-  console.log("Edit page - decoded slug:", decodeURIComponent(params.slug));
+  const { slug } = await params;
+
+  console.log("Edit page - received slug:", slug);
+  console.log("Edit page - decoded slug:", decodeURIComponent(slug));
 
   try {
-    const post = await getPostBySlug(decodeURIComponent(params.slug));
+    const post = await getPostBySlug(decodeURIComponent(slug));
 
     console.log("Edit page - getPostBySlug completed");
     console.log("Edit page - post found:", !!post);
@@ -55,7 +56,7 @@ export default async function EditPostPage({ params }: EditPostPageProps) {
     console.error("Edit page - Error details:", {
       message: error instanceof Error ? error.message : "Unknown error",
       stack: error instanceof Error ? error.stack : undefined,
-      slug: params.slug,
+      slug: slug,
       errorType: typeof error,
     });
     notFound();

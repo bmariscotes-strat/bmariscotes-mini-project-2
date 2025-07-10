@@ -13,14 +13,16 @@ import Comment from "@/components/ui/Comment";
 import PostActions from "@/components/ui/PostActions";
 
 interface BlogPostPageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
+  const { slug } = await params;
+
   try {
-    const post = await getPostBySlug(params.slug);
+    const post = await getPostBySlug(slug);
 
     if (!post) {
       notFound();
