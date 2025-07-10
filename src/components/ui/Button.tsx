@@ -30,7 +30,7 @@ const getButtonClasses = (
 ): string => {
   // Base classes
   const baseClasses =
-    "inline-flex items-center justify-center font-semibold transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 active:scale-95";
+    "inline-flex items-center justify-center transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 active:scale-95";
 
   // Size classes
   const sizeClasses = {

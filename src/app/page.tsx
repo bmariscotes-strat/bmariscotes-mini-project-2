@@ -40,18 +40,18 @@ export default function LandingPage() {
                 Wryte.
               </h1>
 
-              <p className="text-xl sm:text-2xl font-semibold mb-8 max-w-md mx-auto  text-center leading-relaxed">
-                The pen is yours. Leave your mark.
+              <p className="text-xl sm:text-2xl geist font-medium tracking-wide mb-8 max-w-md mx-auto  text-center leading-relaxed">
+                The pen&apos;s yours. Leave your mark.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-center">
+              <div className="flex flex-col sm:flex-row gap-4 pt-2 justify-center lg:justify-center">
                 {/* Primary CTA Button - Accent filled */}
                 <Button
                   variant="accent"
                   style="filled"
-                  size="md"
+                  size="lg"
                   onClick={handleGetStarted}
-                  className="geist"
+                  className="geist font-bold tracking-wide"
                 >
                   Begin your first Wryte
                 </Button>
