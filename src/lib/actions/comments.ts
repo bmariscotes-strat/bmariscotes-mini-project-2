@@ -77,16 +77,151 @@ export async function createReply(
       })
       .returning();
 
-    // You might need to get the postId to revalidate the correct path
-    // This assumes you have a way to get the post ID from the comment
-    // revalidatePath(`/posts/${postId}`);
-
-    // Alternative: revalidate the current path if you're on the post page
     revalidatePath("/posts/[id]", "page");
 
     return reply;
   } catch (error) {
     console.error("Error creating reply:", error);
     throw new Error("Failed to create reply");
+  }
+}
+
+export async function updateComment(
+  commentId: number,
+  content: string,
+  userId: number
+) {
+  try {
+    // First verify the user owns the comment
+    const existingComment = await db
+      .select()
+      .from(comments)
+      .where(eq(comments.id, commentId))
+      .limit(1);
+
+    if (!existingComment.length) {
+      throw new Error("Comment not found");
+    }
+
+    if (existingComment[0].user_id !== userId) {
+      throw new Error("Unauthorized: You can only edit your own comments");
+    }
+
+    const [updatedComment] = await db
+      .update(comments)
+      .set({
+        content,
+        updated_at: new Date(),
+      })
+      .where(eq(comments.id, commentId))
+      .returning();
+
+    // Revalidate the post page
+    revalidatePath(`/posts/${existingComment[0].post_id}`);
+    revalidatePath("/");
+
+    return updatedComment;
+  } catch (error) {
+    console.error("Error updating comment:", error);
+    throw new Error("Failed to update comment");
+  }
+}
+
+export async function deleteComment(commentId: number, userId: number) {
+  try {
+    // First verify the user owns the comment
+    const existingComment = await db
+      .select()
+      .from(comments)
+      .where(eq(comments.id, commentId))
+      .limit(1);
+
+    if (!existingComment.length) {
+      throw new Error("Comment not found");
+    }
+
+    if (existingComment[0].user_id !== userId) {
+      throw new Error("Unauthorized: You can only delete your own comments");
+    }
+
+    // Delete the comment (this will also cascade delete replies if your schema has cascade)
+    await db.delete(comments).where(eq(comments.id, commentId));
+
+    // Revalidate the post page
+    revalidatePath(`/posts/${existingComment[0].post_id}`);
+    revalidatePath("/");
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting comment:", error);
+    throw new Error("Failed to delete comment");
+  }
+}
+
+export async function updateReply(
+  replyId: number,
+  content: string,
+  userId: number
+) {
+  try {
+    // First verify the user owns the reply
+    const existingReply = await db
+      .select()
+      .from(replies)
+      .where(eq(replies.id, replyId))
+      .limit(1);
+
+    if (!existingReply.length) {
+      throw new Error("Reply not found");
+    }
+
+    if (existingReply[0].user_id !== userId) {
+      throw new Error("Unauthorized: You can only edit your own replies");
+    }
+
+    const [updatedReply] = await db
+      .update(replies)
+      .set({
+        content,
+        updated_at: new Date(),
+      })
+      .where(eq(replies.id, replyId))
+      .returning();
+
+    revalidatePath("/posts/[id]", "page");
+
+    return updatedReply;
+  } catch (error) {
+    console.error("Error updating reply:", error);
+    throw new Error("Failed to update reply");
+  }
+}
+
+export async function deleteReply(replyId: number, userId: number) {
+  try {
+    // First verify the user owns the reply
+    const existingReply = await db
+      .select()
+      .from(replies)
+      .where(eq(replies.id, replyId))
+      .limit(1);
+
+    if (!existingReply.length) {
+      throw new Error("Reply not found");
+    }
+
+    if (existingReply[0].user_id !== userId) {
+      throw new Error("Unauthorized: You can only delete your own replies");
+    }
+
+    // Delete the reply
+    await db.delete(replies).where(eq(replies.id, replyId));
+
+    revalidatePath("/posts/[id]", "page");
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting reply:", error);
+    throw new Error("Failed to delete reply");
   }
 }
