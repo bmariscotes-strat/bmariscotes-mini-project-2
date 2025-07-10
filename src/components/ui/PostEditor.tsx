@@ -57,7 +57,7 @@ export default function PostEditor() {
       }),
     ],
     immediatelyRender: false,
-    content: "", // Change this to empty string instead of the paragraph
+    content: "",
     editorProps: {
       attributes: {
         class:
@@ -398,7 +398,7 @@ export default function PostEditor() {
             <button
               onClick={handleSubmit}
               disabled={uploading || !title.trim()}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium flex items-center gap-2"
+              className="btn-small bg-primary text-white rounded-lg hover:bg-primary/80 hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium flex items-center gap-2"
             >
               {uploading ? (
                 <>
@@ -406,7 +406,7 @@ export default function PostEditor() {
                   Publishing...
                 </>
               ) : (
-                "Publish Post"
+                "Publish"
               )}
             </button>
           </div>

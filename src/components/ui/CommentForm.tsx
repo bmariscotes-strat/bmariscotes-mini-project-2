@@ -63,7 +63,7 @@ export default function CommentForm({
       <button
         type="submit"
         disabled={isPending || !content.trim()}
-        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="btn-small bg-primary text-white rounded-lg hover:bg-primary/80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >
         {isPending ? "Posting..." : postId ? "Post Comment" : "Post Reply"}
       </button>

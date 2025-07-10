@@ -135,7 +135,7 @@ export default async function Blog() {
                   <div className="flex items-center justify-between">
                     <Link
                       href={`/blogs/${post.slug}`}
-                      className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium transition-colors"
+                      className="inline-flex items-center text-primary hover:text-blue-800 font-medium transition-colors"
                     >
                       Read more
                       <svg
