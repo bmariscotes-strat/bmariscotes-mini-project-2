@@ -90,7 +90,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         {/* Post Header */}
         <header className="mb-8">
           <div className="flex items-start justify-between mb-4">
-            <h1 className="text-4xl font-bold text-gray-900 flex-1">
+            <h1 className="text-4xl font-bold text-gray-900 flex-1 baskervville">
               {post.title}
             </h1>
 

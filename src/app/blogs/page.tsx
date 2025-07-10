@@ -87,7 +87,7 @@ export default async function Blog() {
             return (
               <article
                 key={post.id}
-                className={`bg-white rounded-md  border-gray-100 overflow-hidden transition-all duration-500 ${
+                className={`bg-white rounded-md border-2 border-gray-100 overflow-hidden transition-all duration-500 ${
                   isNewPost ? "animate-pulse-glow" : ""
                 }`}
               >
@@ -148,14 +148,11 @@ export default async function Blog() {
 
                 {/* Post Content */}
                 <div className="p-4">
-                  <h2 className="text-xl font-bold mb-2 text-gray-900 leading-tight">
-                    <Link
-                      href={`/blogs/${post.slug}`}
-                      className="hover:text-blue-600 transition-colors"
-                    >
+                  <div>
+                    <h2 className="text-3xl font-bold mb-2 tracking-wider baskervville text-primary">
                       {post.title}
-                    </Link>
-                  </h2>
+                    </h2>
+                  </div>
 
                   <div className="text-gray-700 mb-4 leading-relaxed text-sm">
                     {truncatedContent}
@@ -189,25 +186,32 @@ export default async function Blog() {
                       </div>
                     </div>
 
-                    <time className="text-gray-400">
+                    {/* <time className="text-gray-400">
                       {post.created_at &&
                         new Date(post.created_at).toLocaleDateString("en-US", {
                           month: "short",
                           day: "numeric",
                           year: "numeric",
                         })}
-                    </time>
+                    </time> */}
+
+                    <Link
+                      href={`/blogs/${post.slug}`}
+                      className="text-primary/70 hover:text-primary hover:font-semibold font-medium justify-end text-sm transition-colors"
+                    >
+                      Read more
+                    </Link>
                   </div>
 
                   {/* Read More */}
-                  <div className="mt-3">
+                  {/* <div className="mt-3">
                     <Link
                       href={`/blogs/${post.slug}`}
                       className="text-primary hover:text-blue-800 font-medium justify-end text-sm transition-colors"
                     >
                       Read more
                     </Link>
-                  </div>
+                  </div> */}
                 </div>
               </article>
             );
