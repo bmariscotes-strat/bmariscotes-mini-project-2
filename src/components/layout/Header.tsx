@@ -104,7 +104,7 @@ export default function Header() {
               </Link>
             ))}
             <Link
-              href="/login"
+              href="/sign-in"
               className="mx-4 px-4 py-2 border border-purple-300 text-primary-600 rounded-lg hover:bg-primary-50 hover:border-purple-400 transition-all duration-200 font-medium text-center"
               onClick={() => setIsMobileMenuOpen(false)}
             >
