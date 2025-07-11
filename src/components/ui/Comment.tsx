@@ -12,6 +12,7 @@ import {
   deleteReply,
 } from "@/lib/actions/comments";
 import { useRouter } from "next/navigation";
+import { Pencil, Trash2 } from "lucide-react";
 
 interface CommentProps {
   comment: {
@@ -148,7 +149,7 @@ export default function Comment({
   return (
     <>
       <div className="space-y-4">
-        <div className="bg-gray-50 rounded-lg p-4">
+        <div className="bg-gray-100/70 rounded-lg p-4">
           <div className="flex items-start justify-between mb-2">
             <div className="flex items-center space-x-2">
               <span className="font-medium text-gray-900">
@@ -170,16 +171,16 @@ export default function Comment({
                 <button
                   onClick={handleEditComment}
                   disabled={isPending}
-                  className="text-blue-600 hover:text-blue-800 text-sm font-medium disabled:opacity-50"
+                  className="text-blue-400 hover:text-blue-600 disabled:opacity-50"
                 >
-                  Edit
+                  <Pencil className="w-4 h-4" />
                 </button>
                 <button
                   onClick={handleDeleteComment}
                   disabled={isPending}
-                  className="text-red-600 hover:text-red-800 text-sm font-medium disabled:opacity-50"
+                  className="text-red-400 hover:text-red-600 disabled:opacity-50"
                 >
-                  Delete
+                  <Trash2 className="w-4 h-4" />
                 </button>
               </div>
             )}
@@ -259,7 +260,10 @@ export default function Comment({
                 reply.updated_at.getTime() !== reply.created_at.getTime();
 
               return (
-                <div key={reply.id} className="bg-white border rounded-lg p-4">
+                <div
+                  key={reply.id}
+                  className="bg-gray-50 border-l-2 border-l-primary/50 p-4"
+                >
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex items-center space-x-2">
                       <span className="font-medium text-gray-900">
@@ -285,16 +289,16 @@ export default function Comment({
                             handleEditReply(reply.id, reply.content)
                           }
                           disabled={isPending}
-                          className="text-blue-600 hover:text-blue-800 text-sm font-medium disabled:opacity-50"
+                          className="text-blue-400 hover:text-blue-600 disabled:opacity-50"
                         >
-                          Edit
+                          <Pencil className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleDeleteReply(reply.id)}
                           disabled={isPending}
-                          className="text-red-600 hover:text-red-800 text-sm font-medium disabled:opacity-50"
+                          className="text-red-400 hover:text-red-600 disabled:opacity-50"
                         >
-                          Delete
+                          <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
                     )}
