@@ -66,7 +66,7 @@ export default async function Blog() {
             Hello, Wryter {user?.first_name || "Guest"}!
           </h1>
           <p className="text-gray-600 text-base">
-            Unleash your thoughts, shape your story.
+            Write your truth, and explore stories from others.
           </p>
         </div>
 
