@@ -19,7 +19,7 @@ export default function SignUpPage() {
             </p>
           </div>
 
-          <div className="bg-white py-8 px-4 sm:rounded-lg sm:px-10">
+          <div className="bg-white py-8 sm:rounded-lg sm:px-10">
             <SignUp
               afterSignUpUrl="/blogs"
               appearance={{
