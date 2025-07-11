@@ -18,7 +18,7 @@ export default function Header() {
   ];
 
   return (
-    <header className="w-full px-6 py-6 sm:px-6 lg:px-60 sticky top-0 z-50">
+    <header className="w-full px-6 py-6 sm:px-6 lg:px-60 sticky top-0 z-50 border-b border-gray-300">
       <nav className="flex items-center justify-between max-w-10xl mx-auto">
         {/* Logo */}
         <Link href="/" className="flex items-center space-x-3 group">

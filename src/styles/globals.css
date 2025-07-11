@@ -331,3 +331,12 @@ body {
     animation: tooltip-shake 0.3s ease-in-out;
   }
 }
+
+.cl-cardBox {
+  box-shadow: none !important;
+  border: 1.8px solid #e1e1e1;
+}
+
+.cl-header {
+  display: none !important;
+}
