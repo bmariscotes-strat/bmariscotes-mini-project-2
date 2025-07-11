@@ -1,12 +1,20 @@
 // components/share-buttons.tsx
 "use client";
 
+import { useState, useEffect } from "react";
+
 interface ShareButtonsProps {
   url: string;
   title: string;
 }
 
 export function ShareButtons({ url, title }: ShareButtonsProps) {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   const shareData = {
     title,
     url,
@@ -61,6 +69,9 @@ export function ShareButtons({ url, title }: ShareButtonsProps) {
       console.error("Failed to copy:", error);
     }
   };
+
+  const hasNativeShare =
+    isClient && typeof navigator !== "undefined" && "share" in navigator;
 
   return (
     <div className="flex flex-wrap gap-2">
@@ -134,8 +145,8 @@ export function ShareButtons({ url, title }: ShareButtonsProps) {
         Copy Link
       </button>
 
-      {/* Native Share API (mobile devices) */}
-      {typeof navigator !== "undefined" && "share" in navigator && (
+      {/* Native Share API (mobile devices) - Only render after client hydration */}
+      {hasNativeShare && (
         <button
           onClick={() => handleShare("native")}
           className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-2"
