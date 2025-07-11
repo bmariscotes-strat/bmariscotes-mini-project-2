@@ -216,7 +216,7 @@ export default function EditPostForm({ post }: EditPostFormProps) {
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8 sm:p-6 lg:p-8">
+    <div className="max-w-5xl mx-auto px-4 pt-2 pb-8">
       {/* Toast Notification */}
       {toast.show && (
         <div
