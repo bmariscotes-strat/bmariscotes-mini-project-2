@@ -12,7 +12,7 @@ import CommentForm from "@/components/ui/CommentForm";
 import Comment from "@/components/ui/Comment";
 import PostActions from "@/components/ui/PostActions";
 import { AuthGuard } from "@/components/auth/AuthGuard";
-import { AuthPrompt, AuthPromptCompact } from "@/components/auth/AuthPrompt";
+import { AuthPrompt } from "@/components/auth/AuthPrompt";
 import { ShareButtons } from "@/components/ui/ShareButtons";
 import { getCurrentUser } from "@/lib/actions/users";
 
@@ -75,7 +75,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         <div className="mb-8">
           <Link
             href="/blogs"
-            className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium transition-colors"
+            className="inline-flex items-center text-primary hover:text-primary text-sm transition-colors"
           >
             <svg
               className="mr-2 w-4 h-4"
@@ -90,7 +90,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 d="M15 19l-7-7 7-7"
               />
             </svg>
-            Back to blogs
+            Back To Blogs
           </Link>
         </div>
 
@@ -162,7 +162,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         </article>
 
         {/* Share functionality - Always visible */}
-        <div className="mt-8 mb-8 border-t pt-8">
+        <div className="mt-8 mb-8 border-t border-gray-200  pt-8">
           <h3 className="text-lg font-semibold mb-4">Share this post</h3>
           <ShareButtons
             url={`${process.env.NEXT_PUBLIC_APP_URL}/blogs/${slug}`}
@@ -187,7 +187,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           </div>
 
           {/* Auth Status Indicator */}
-          <div className="mb-8">
+          {/* <div className="mb-8">
             <AuthGuard
               fallback={<AuthPromptCompact action="comment" />}
               showPrompt={false}
@@ -198,7 +198,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 </p>
               </div>
             </AuthGuard>
-          </div>
+          </div> */}
 
           {/* Comments List - Always visible */}
           <div className="space-y-6">
@@ -220,29 +220,6 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             )}
           </div>
         </section>
-
-        {/* Footer Navigation */}
-        <footer className="mt-12 pt-8 border-t border-gray-200">
-          <Link
-            href="/blogs"
-            className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium transition-colors"
-          >
-            <svg
-              className="mr-2 w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
-            Back to all posts
-          </Link>
-        </footer>
       </div>
     );
   } catch (error) {

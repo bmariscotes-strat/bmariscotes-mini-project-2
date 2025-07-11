@@ -20,6 +20,8 @@ interface CommentProps {
     user_id: number;
     created_at: Date | null;
     updated_at?: Date | null;
+    user_first_name?: string | null;
+    user_last_name?: string | null;
   };
   replies?: {
     id: number;
@@ -27,6 +29,8 @@ interface CommentProps {
     user_id: number;
     created_at: Date | null;
     updated_at?: Date | null;
+    user_first_name?: string | null;
+    user_last_name?: string | null;
   }[];
   userId: number | null;
   reactionCounts: { upvotes: number; downvotes: number };
@@ -40,7 +44,6 @@ export default function Comment({
   userId,
   reactionCounts,
   userReaction,
-  userName = "Anonymous",
 }: CommentProps) {
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -148,7 +151,11 @@ export default function Comment({
         <div className="bg-gray-50 rounded-lg p-4">
           <div className="flex items-start justify-between mb-2">
             <div className="flex items-center space-x-2">
-              <span className="font-medium text-gray-900">{userName}</span>
+              <span className="font-medium text-gray-900">
+                {comment.user_first_name && comment.user_last_name
+                  ? `${comment.user_first_name} ${comment.user_last_name}`
+                  : "Anonymous"}
+              </span>
               <span className="text-gray-500 text-sm">
                 {comment.created_at &&
                   formatDistanceToNow(comment.created_at, { addSuffix: true })}
@@ -256,7 +263,9 @@ export default function Comment({
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex items-center space-x-2">
                       <span className="font-medium text-gray-900">
-                        Anonymous
+                        {reply.user_first_name && reply.user_last_name
+                          ? `${reply.user_first_name} ${reply.user_last_name}`
+                          : "Anonymous"}
                       </span>
                       <span className="text-gray-500 text-sm">
                         {reply.created_at &&

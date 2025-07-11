@@ -1,15 +1,26 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { comments, replies } from "@/lib/schema";
+import { comments, replies, users } from "@/lib/schema";
 import { eq, desc } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 export async function getCommentsByPostId(postId: number) {
   try {
     const postComments = await db
-      .select()
+      .select({
+        id: comments.id,
+        content: comments.content,
+        user_id: comments.user_id,
+        post_id: comments.post_id,
+        created_at: comments.created_at,
+        updated_at: comments.updated_at,
+        // Keep snake_case consistent
+        user_first_name: users.first_name,
+        user_last_name: users.last_name,
+      })
       .from(comments)
+      .leftJoin(users, eq(comments.user_id, users.id))
       .where(eq(comments.post_id, postId))
       .orderBy(desc(comments.created_at));
 
@@ -23,8 +34,19 @@ export async function getCommentsByPostId(postId: number) {
 export async function getRepliesByCommentId(commentId: number) {
   try {
     const commentReplies = await db
-      .select()
+      .select({
+        id: replies.id,
+        content: replies.content,
+        user_id: replies.user_id,
+        comment_id: replies.comment_id,
+        created_at: replies.created_at,
+        updated_at: replies.updated_at,
+        // Keep snake_case consistent
+        user_first_name: users.first_name,
+        user_last_name: users.last_name,
+      })
       .from(replies)
+      .leftJoin(users, eq(replies.user_id, users.id))
       .where(eq(replies.comment_id, commentId))
       .orderBy(desc(replies.created_at));
 
