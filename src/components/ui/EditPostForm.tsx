@@ -18,7 +18,6 @@ import {
   Upload,
   CheckCircle,
   AlertCircle,
-  ArrowLeft,
 } from "lucide-react";
 import NextImage from "next/image";
 import { updatePost } from "@/lib/actions/posts";
@@ -217,11 +216,11 @@ export default function EditPostForm({ post }: EditPostFormProps) {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
+    <div className="max-w-5xl mx-auto px-4 py-8 sm:p-6 lg:p-8">
       {/* Toast Notification */}
       {toast.show && (
         <div
-          className={`fixed top-4 right-4 z-50 flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg border transform transition-all duration-300 ease-in-out ${
+          className={`fixed top-4 right-4 z-50 flex items-center gap-3 px-4 py-3 rounded-lg border transform transition-all duration-300 ease-in-out ${
             toast.type === "success"
               ? "bg-green-50 border-green-200 text-green-800"
               : "bg-red-50 border-red-200 text-red-800"
@@ -242,21 +241,10 @@ export default function EditPostForm({ post }: EditPostFormProps) {
         </div>
       )}
 
-      {/* Navigation */}
-      <div className="mb-8">
-        <Link
-          href={`/blogs/${post.slug}`}
-          className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium transition-colors"
-        >
-          <ArrowLeft className="mr-2 w-4 h-4" />
-          Back to post
-        </Link>
-      </div>
-
-      <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-xl border-2 border-gray-200 overflow-hidden">
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 border-b border-gray-200">
-          <h2 className="text-2xl font-bold text-gray-800">Edit Post</h2>
+        <div className=" px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+          <h2 className="text-2xl font-bold text-primary">Edit Blog</h2>
         </div>
 
         <div className="p-6 space-y-6">
@@ -285,7 +273,7 @@ export default function EditPostForm({ post }: EditPostFormProps) {
                 onClick={() => editor.chain().focus().toggleBold().run()}
                 className={`p-2 rounded-md hover:bg-gray-200 transition-colors ${
                   editor.isActive("bold")
-                    ? "bg-blue-500 text-white hover:bg-blue-600"
+                    ? "bg-primary text-white hover:bg-blue-600"
                     : ""
                 }`}
                 title="Bold"
@@ -296,7 +284,7 @@ export default function EditPostForm({ post }: EditPostFormProps) {
                 onClick={() => editor.chain().focus().toggleItalic().run()}
                 className={`p-2 rounded-md hover:bg-gray-200 transition-colors ${
                   editor.isActive("italic")
-                    ? "bg-blue-500 text-white hover:bg-blue-600"
+                    ? "bg-primary text-white hover:bg-blue-600"
                     : ""
                 }`}
                 title="Italic"
@@ -310,7 +298,7 @@ export default function EditPostForm({ post }: EditPostFormProps) {
                 }
                 className={`p-2 rounded-md hover:bg-gray-200 transition-colors ${
                   editor.isActive("heading", { level: 2 })
-                    ? "bg-blue-500 text-white hover:bg-blue-600"
+                    ? "bg-primary text-white hover:bg-blue-600"
                     : ""
                 }`}
                 title="Heading 2"
@@ -324,7 +312,7 @@ export default function EditPostForm({ post }: EditPostFormProps) {
                 }
                 className={`p-2 rounded-md hover:bg-gray-200 transition-colors ${
                   editor.isActive("heading", { level: 3 })
-                    ? "bg-blue-500 text-white hover:bg-blue-600"
+                    ? "bg-primary text-white hover:bg-blue-600"
                     : ""
                 }`}
                 title="Heading 3"
@@ -338,7 +326,7 @@ export default function EditPostForm({ post }: EditPostFormProps) {
                 }
                 className={`p-2 rounded-md hover:bg-gray-200 transition-colors ${
                   editor.isActive("heading", { level: 4 })
-                    ? "bg-blue-500 text-white hover:bg-blue-600"
+                    ? "bg-primary text-white hover:bg-blue-600"
                     : ""
                 }`}
                 title="Heading 4"
@@ -350,7 +338,7 @@ export default function EditPostForm({ post }: EditPostFormProps) {
                 onClick={() => editor.chain().focus().toggleBulletList().run()}
                 className={`p-2 rounded-md hover:bg-gray-200 transition-colors ${
                   editor.isActive("bulletList")
-                    ? "bg-blue-500 text-white hover:bg-blue-600"
+                    ? "bg-primary text-white hover:bg-blue-600"
                     : ""
                 }`}
                 title="Bullet List"
@@ -435,7 +423,7 @@ export default function EditPostForm({ post }: EditPostFormProps) {
             <button
               onClick={handleSubmit}
               disabled={isUpdating || !title.trim()}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium flex items-center gap-2"
+              className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium flex items-center gap-2"
             >
               {isUpdating ? (
                 <>

@@ -214,7 +214,7 @@ export default function Comment({
                       <button
                         onClick={handleEditComment}
                         disabled={isPending}
-                        className="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 disabled:opacity-50"
+                        className="flex items-center w-full px-3 py-2 text-sm text-blue-400 hover:bg-gray-100 disabled:opacity-50 cursor-pointer"
                       >
                         <Pencil className="w-4 h-4 mr-2" />
                         Edit
@@ -222,7 +222,7 @@ export default function Comment({
                       <button
                         onClick={handleDeleteComment}
                         disabled={isPending}
-                        className="flex items-center w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50 disabled:opacity-50"
+                        className="flex items-center w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50 disabled:opacity-50 cursor-pointer"
                       >
                         <Trash2 className="w-4 h-4 mr-2" />
                         Delete

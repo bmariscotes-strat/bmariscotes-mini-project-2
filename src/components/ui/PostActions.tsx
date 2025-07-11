@@ -114,9 +114,9 @@ export default function PostActions({
               <div className="py-1">
                 <button
                   onClick={handleEdit}
-                  className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-3 transition-colors"
+                  className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100   cursor-pointer flex items-center gap-3 transition-colors"
                 >
-                  <Edit3 size={16} className="text-blue-600" />
+                  <Edit3 size={16} className="text-blue-400" />
                   Edit Post
                 </button>
                 <button
@@ -124,7 +124,7 @@ export default function PostActions({
                     setShowDeleteModal(true);
                     setShowDropdown(false);
                   }}
-                  className="w-full px-4 py-2 text-left text-sm text-red-700 hover:bg-red-50 flex items-center gap-3 transition-colors"
+                  className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 cursor-pointer flex items-center gap-3 transition-colors"
                 >
                   <Trash2 size={16} className="text-red-600" />
                   Delete Post

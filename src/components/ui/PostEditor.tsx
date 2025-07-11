@@ -300,7 +300,7 @@ export default function PostEditor() {
                   onClick={() => editor.chain().focus().toggleBold().run()}
                   className={`p-2 rounded-md hover:bg-gray-200 transition-colors ${
                     editor.isActive("bold")
-                      ? "bg-blue-500 text-white hover:bg-blue-600"
+                      ? "bg-primary text-white hover:bg-blue-600"
                       : ""
                   }`}
                   title="Bold"
@@ -311,7 +311,7 @@ export default function PostEditor() {
                   onClick={() => editor.chain().focus().toggleItalic().run()}
                   className={`p-2 rounded-md hover:bg-gray-200 transition-colors ${
                     editor.isActive("italic")
-                      ? "bg-blue-500 text-white hover:bg-blue-600"
+                      ? "bg-primary text-white hover:bg-blue-600"
                       : ""
                   }`}
                   title="Italic"
@@ -325,7 +325,7 @@ export default function PostEditor() {
                   }
                   className={`p-2 rounded-md hover:bg-gray-200 transition-colors ${
                     editor.isActive("heading", { level: 2 })
-                      ? "bg-blue-500 text-white hover:bg-blue-600"
+                      ? "bg-primary text-white hover:bg-blue-600"
                       : ""
                   }`}
                   title="Heading 2"
@@ -339,7 +339,7 @@ export default function PostEditor() {
                   }
                   className={`p-2 rounded-md hover:bg-gray-200 transition-colors ${
                     editor.isActive("heading", { level: 3 })
-                      ? "bg-blue-500 text-white hover:bg-blue-600"
+                      ? "bg-primary text-white hover:bg-blue-600"
                       : ""
                   }`}
                   title="Heading 3"
@@ -353,7 +353,7 @@ export default function PostEditor() {
                   }
                   className={`p-2 rounded-md hover:bg-gray-200 transition-colors ${
                     editor.isActive("heading", { level: 4 })
-                      ? "bg-blue-500 text-white hover:bg-blue-600"
+                      ? "bg-primary text-white hover:bg-blue-600"
                       : ""
                   }`}
                   title="Heading 4"
@@ -367,7 +367,7 @@ export default function PostEditor() {
                   }
                   className={`p-2 rounded-md hover:bg-gray-200 transition-colors ${
                     editor.isActive("bulletList")
-                      ? "bg-blue-500 text-white hover:bg-blue-600"
+                      ? "bg-primary text-white hover:bg-blue-600"
                       : ""
                   }`}
                   title="Bullet List"
