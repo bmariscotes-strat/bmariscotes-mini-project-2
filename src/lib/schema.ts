@@ -97,7 +97,7 @@ export const replies = pgTable(
       .references(() => users.id)
       .notNull(),
     comment_id: integer("comment_id")
-      .references(() => comments.id)
+      .references(() => comments.id, { onDelete: "cascade" }) // Add cascade delete
       .notNull(),
     created_at: timestamp("created_at").defaultNow(),
     updated_at: timestamp("updated_at").defaultNow(),

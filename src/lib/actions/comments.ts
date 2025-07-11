@@ -1,8 +1,8 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { comments, replies, users } from "@/lib/schema";
-import { eq, desc } from "drizzle-orm";
+import { comments, replies, users, reactions } from "@/lib/schema";
+import { eq, and, inArray, desc } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 export async function getCommentsByPostId(postId: number) {
@@ -151,32 +151,56 @@ export async function updateComment(
 
 export async function deleteComment(commentId: number, userId: number) {
   try {
-    // First verify the user owns the comment
-    const existingComment = await db
+    // First, verify the user owns the comment
+    const comment = await db
       .select()
       .from(comments)
       .where(eq(comments.id, commentId))
       .limit(1);
 
-    if (!existingComment.length) {
-      throw new Error("Comment not found");
-    }
-
-    if (existingComment[0].user_id !== userId) {
+    if (!comment.length || comment[0].user_id !== userId) {
       throw new Error("Unauthorized: You can only delete your own comments");
     }
 
-    // Delete the comment (this will also cascade delete replies if your schema has cascade)
-    await db.delete(comments).where(eq(comments.id, commentId));
+    // Get all reply IDs for this comment (for deleting their reactions)
+    const replyIds = await db
+      .select({ id: replies.id })
+      .from(replies)
+      .where(eq(replies.comment_id, commentId));
 
-    // Revalidate the post page
-    revalidatePath(`/posts/${existingComment[0].post_id}`);
-    revalidatePath("/");
+    // 1. Delete reactions on all replies to this comment
+    if (replyIds.length > 0) {
+      await db.delete(reactions).where(
+        and(
+          eq(reactions.target_type, "reply"),
+          inArray(
+            reactions.target_id,
+            replyIds.map((r) => r.id)
+          )
+        )
+      );
+    }
+
+    // 2. Delete reactions on the comment itself
+    await db
+      .delete(reactions)
+      .where(
+        and(
+          eq(reactions.target_type, "comment"),
+          eq(reactions.target_id, commentId)
+        )
+      );
+
+    // 3. Delete all replies to this comment (cascade will handle this if you have it set up)
+    await db.delete(replies).where(eq(replies.comment_id, commentId));
+
+    // 4. Finally, delete the comment
+    await db.delete(comments).where(eq(comments.id, commentId));
 
     return { success: true };
   } catch (error) {
     console.error("Error deleting comment:", error);
-    throw new Error("Failed to delete comment");
+    throw error;
   }
 }
 

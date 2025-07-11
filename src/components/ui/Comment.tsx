@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useRef, useEffect } from "react";
 import { formatDistanceToNow } from "date-fns";
 import CommentForm from "@/components/ui/CommentForm";
 import ReactionButton from "@/components/ui/ReactionButton";
@@ -12,7 +12,7 @@ import {
   deleteReply,
 } from "@/lib/actions/comments";
 import { useRouter } from "next/navigation";
-import { Pencil, Trash2 } from "lucide-react";
+import { MoreVertical, Pencil, Trash2 } from "lucide-react";
 
 interface CommentProps {
   comment: {
@@ -55,13 +55,42 @@ export default function Comment({
   const [showDeleteCommentModal, setShowDeleteCommentModal] = useState(false);
   const [showDeleteReplyModal, setShowDeleteReplyModal] = useState(false);
   const [replyToDelete, setReplyToDelete] = useState<number | null>(null);
+  const [showCommentDropdown, setShowCommentDropdown] = useState(false);
+  const [showReplyDropdown, setShowReplyDropdown] = useState<number | null>(
+    null
+  );
   const router = useRouter();
 
+  const commentDropdownRef = useRef<HTMLDivElement>(null);
+  const replyDropdownRef = useRef<HTMLDivElement>(null);
+
   const isOwner = userId === comment.user_id;
+
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        commentDropdownRef.current &&
+        !commentDropdownRef.current.contains(event.target as Node)
+      ) {
+        setShowCommentDropdown(false);
+      }
+      if (
+        replyDropdownRef.current &&
+        !replyDropdownRef.current.contains(event.target as Node)
+      ) {
+        setShowReplyDropdown(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleEditComment = () => {
     setIsEditing(true);
     setEditContent(comment.content);
+    setShowCommentDropdown(false);
   };
 
   const handleUpdateComment = () => {
@@ -81,6 +110,7 @@ export default function Comment({
 
   const handleDeleteComment = () => {
     setShowDeleteCommentModal(true);
+    setShowCommentDropdown(false);
   };
 
   const confirmDeleteComment = () => {
@@ -100,6 +130,7 @@ export default function Comment({
   const handleEditReply = (replyId: number, content: string) => {
     setEditingReplyId(replyId);
     setEditingReplyContent(content);
+    setShowReplyDropdown(null);
   };
 
   const handleUpdateReply = (replyId: number) => {
@@ -121,6 +152,7 @@ export default function Comment({
   const handleDeleteReply = (replyId: number) => {
     setReplyToDelete(replyId);
     setShowDeleteReplyModal(true);
+    setShowReplyDropdown(null);
   };
 
   const confirmDeleteReply = () => {
@@ -167,21 +199,37 @@ export default function Comment({
             </div>
 
             {isOwner && (
-              <div className="flex items-center space-x-2">
+              <div className="relative" ref={commentDropdownRef}>
                 <button
-                  onClick={handleEditComment}
+                  onClick={() => setShowCommentDropdown(!showCommentDropdown)}
                   disabled={isPending}
-                  className="text-blue-400 hover:text-blue-600 disabled:opacity-50"
+                  className="text-gray-500 hover:text-gray-700 disabled:opacity-50 p-1 rounded-full hover:bg-gray-200"
                 >
-                  <Pencil className="w-4 h-4" />
+                  <MoreVertical className="w-4 h-4" />
                 </button>
-                <button
-                  onClick={handleDeleteComment}
-                  disabled={isPending}
-                  className="text-red-400 hover:text-red-600 disabled:opacity-50"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
+
+                {showCommentDropdown && (
+                  <div className="absolute right-0 mt-1 w-32 bg-white rounded-md shadow-lg border border-gray-200 z-10">
+                    <div className="py-1">
+                      <button
+                        onClick={handleEditComment}
+                        disabled={isPending}
+                        className="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 disabled:opacity-50"
+                      >
+                        <Pencil className="w-4 h-4 mr-2" />
+                        Edit
+                      </button>
+                      <button
+                        onClick={handleDeleteComment}
+                        disabled={isPending}
+                        className="flex items-center w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50 disabled:opacity-50"
+                      >
+                        <Trash2 className="w-4 h-4 mr-2" />
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -283,23 +331,43 @@ export default function Comment({
                     </div>
 
                     {isReplyOwner && (
-                      <div className="flex items-center space-x-2">
+                      <div className="relative" ref={replyDropdownRef}>
                         <button
                           onClick={() =>
-                            handleEditReply(reply.id, reply.content)
+                            setShowReplyDropdown(
+                              showReplyDropdown === reply.id ? null : reply.id
+                            )
                           }
                           disabled={isPending}
-                          className="text-blue-400 hover:text-blue-600 disabled:opacity-50"
+                          className="text-gray-500 hover:text-gray-700 disabled:opacity-50 p-1 rounded-full hover:bg-gray-200"
                         >
-                          <Pencil className="w-4 h-4" />
+                          <MoreVertical className="w-4 h-4" />
                         </button>
-                        <button
-                          onClick={() => handleDeleteReply(reply.id)}
-                          disabled={isPending}
-                          className="text-red-400 hover:text-red-600 disabled:opacity-50"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
+
+                        {showReplyDropdown === reply.id && (
+                          <div className="absolute right-0 mt-1 w-32 bg-white rounded-md shadow-lg border border-gray-200 z-10">
+                            <div className="py-1">
+                              <button
+                                onClick={() =>
+                                  handleEditReply(reply.id, reply.content)
+                                }
+                                disabled={isPending}
+                                className="flex items-center w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 disabled:opacity-50"
+                              >
+                                <Pencil className="w-4 h-4 mr-2" />
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => handleDeleteReply(reply.id)}
+                                disabled={isPending}
+                                className="flex items-center w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50 disabled:opacity-50"
+                              >
+                                <Trash2 className="w-4 h-4 mr-2" />
+                                Delete
+                              </button>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
