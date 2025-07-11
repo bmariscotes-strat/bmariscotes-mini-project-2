@@ -50,11 +50,7 @@ export default async function EditPostPage({ params }: EditPostPageProps) {
     }
 
     console.log("Edit page - rendering EditPostForm");
-    return (
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <EditPostForm post={post} />
-      </div>
-    );
+    return <EditPostForm post={post} />;
   } catch (error) {
     console.error("Edit page - Catch block triggered");
     console.error("Edit page - Error loading post for editing:", error);
