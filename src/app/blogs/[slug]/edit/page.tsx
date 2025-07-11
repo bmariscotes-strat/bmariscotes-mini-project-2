@@ -2,6 +2,7 @@
 import { getPostBySlug } from "@/lib/actions/posts";
 import { notFound, redirect } from "next/navigation";
 import EditPostForm from "@/components/ui/EditPostForm";
+import { getCurrentUser } from "@/lib/actions/users";
 
 interface EditPostPageProps {
   params: Promise<{
@@ -35,8 +36,12 @@ export default async function EditPostPage({ params }: EditPostPageProps) {
       notFound();
     }
 
-    // TODO: Replace with actual user ID from your auth system
-    const userId = 1; // This should come from your authentication system
+    const currentUser = await getCurrentUser();
+    if (!currentUser) {
+      throw new Error("Please log in to create a post");
+    }
+
+    const userId = currentUser.id; // This should come from your authentication system
 
     // Check if current user is the author of the post
     if (post.user_id !== userId) {

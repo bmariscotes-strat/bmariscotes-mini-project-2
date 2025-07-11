@@ -1,1 +1,0 @@
-ALTER TABLE "post_images" DROP COLUMN "alt_text";

@@ -21,6 +21,7 @@ import {
 import NextImage from "next/image";
 import { insertPostWithImages } from "@/lib/actions/posts";
 import Placeholder from "@tiptap/extension-placeholder";
+import { getCurrentUser } from "@/lib/actions/users";
 
 export default function PostEditor() {
   const [isOpen, setIsOpen] = useState(false);
@@ -173,13 +174,13 @@ export default function PostEditor() {
         }
       }
 
+      const currentUser = await getCurrentUser();
+      if (!currentUser) {
+        throw new Error("Please log in to create a post");
+      }
+
       // Server Action call
-      await insertPostWithImages(
-        title,
-        content,
-        1, // replace with actual user ID later
-        imageUrls
-      );
+      await insertPostWithImages(title, content, currentUser.id, imageUrls);
 
       showToast("Post created successfully!", "success");
 

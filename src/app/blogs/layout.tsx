@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ReactNode, useState } from "react";
 import Image from "next/image";
 import { UserCircle, LogOut, NotebookPen } from "lucide-react";
+import { SignOutButton } from "@clerk/nextjs";
 
 /**
  * Blog layout wrapper with sticky header
@@ -54,16 +55,18 @@ export default function BlogLayout({ children }: { children: ReactNode }) {
                     <NotebookPen className="w-4 h-4 mr-2 text-primary" />
                     My Blogs
                   </Link>
-                  <button
-                    onClick={() => {
-                      // Add your log out logic here
-                      console.log("Logging out...");
-                    }}
-                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-                  >
-                    <LogOut className="w-4 h-4 mr-2 text-red-500" />
-                    Log Out
-                  </button>
+                  <SignOutButton>
+                    <button
+                      onClick={() => {
+                        // Add your log out logic here
+                        console.log("Logging out...");
+                      }}
+                      className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                    >
+                      <LogOut className="w-4 h-4 mr-2 text-red-500" />
+                      Log Out
+                    </button>
+                  </SignOutButton>
                 </div>
               )}
             </div>

@@ -5,7 +5,7 @@ import Link from "next/link";
 import PostEditor from "@/components/ui/PostEditor";
 import Image from "next/image";
 import { MessageCircle, ChevronUp, ChevronDown } from "lucide-react";
-import { getUserById } from "@/lib/actions/users";
+import { getCurrentUser } from "@/lib/actions/users";
 
 // Helper function to extract plain text from HTML content
 function extractPlainText(html: string): string {
@@ -37,7 +37,7 @@ function extractAllImages(html: string): string[] {
 
 export default async function Blog() {
   const posts = await getAllPosts();
-  const user = await getUserById(1);
+  const user = await getCurrentUser(); // Changed from getUserById(1)
 
   // Sort posts latest to oldest
   const sortedPosts = posts.sort((a, b) => {
@@ -63,7 +63,7 @@ export default async function Blog() {
       <div className="space-y-6">
         <div className="bg-primary/5 border border-primary/30 rounded-md p-6 text-center space-y-2">
           <h1 className="text-4xl font-extrabold text-primary tracking-tight">
-            Hello, Wryter {user?.name || "Guest"}!
+            Hello, Wryter {user?.first_name || "Guest"}!
           </h1>
           <p className="text-gray-600 text-base">
             Unleash your thoughts, shape your story.

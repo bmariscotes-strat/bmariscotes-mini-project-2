@@ -11,6 +11,10 @@ import ReactionButton from "@/components/ui/ReactionButton";
 import CommentForm from "@/components/ui/CommentForm";
 import Comment from "@/components/ui/Comment";
 import PostActions from "@/components/ui/PostActions";
+import { AuthGuard } from "@/components/auth/AuthGuard";
+import { AuthPrompt, AuthPromptCompact } from "@/components/auth/AuthPrompt";
+import { ShareButtons } from "@/components/ui/ShareButtons";
+import { getCurrentUser } from "@/lib/actions/users";
 
 interface BlogPostPageProps {
   params: Promise<{
@@ -32,12 +36,17 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     const comments = await getCommentsByPostId(post.id);
     const postReactionCounts = await getReactionCounts("post", post.id);
 
-    // TODO: Replace with actual user ID from your auth system
-    const userId = 1; // This should come from your authentication system
-    const userReaction = await getUserReaction(userId, "post", post.id);
+    // Get current user - but don't require authentication for viewing
+    const currentUser = await getCurrentUser();
+    const userId = currentUser?.id || null;
+
+    // Only get user-specific data if user is logged in
+    const userReaction = userId
+      ? await getUserReaction(userId, "post", post.id)
+      : null;
 
     // Check if current user is the author of the post
-    const isAuthor = post.user_id === userId;
+    const isAuthor = userId && post.user_id === userId;
 
     // Get replies for each comment and their reaction data
     const commentsWithReplies = await Promise.all(
@@ -47,11 +56,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           "comment",
           comment.id
         );
-        const commentUserReaction = await getUserReaction(
-          userId,
-          "comment",
-          comment.id
-        );
+        const commentUserReaction = userId
+          ? await getUserReaction(userId, "comment", comment.id)
+          : null;
 
         return {
           ...comment,
@@ -132,15 +139,17 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 )}
             </div>
 
-            {/* Post Reactions */}
-            <ReactionButton
-              targetType="post"
-              targetId={post.id}
-              userId={userId}
-              initialUpvotes={postReactionCounts.upvotes}
-              initialDownvotes={postReactionCounts.downvotes}
-              userReaction={userReaction?.type || null}
-            />
+            {/* Post Reactions - only show if user is logged in */}
+            {userId && (
+              <ReactionButton
+                targetType="post"
+                targetId={post.id}
+                userId={userId}
+                initialUpvotes={postReactionCounts.upvotes}
+                initialDownvotes={postReactionCounts.downvotes}
+                userReaction={userReaction?.type || null}
+              />
+            )}
           </div>
         </header>
 
@@ -152,18 +161,46 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           />
         </article>
 
+        {/* Share functionality - Always visible */}
+        <div className="mt-8 mb-8 border-t pt-8">
+          <h3 className="text-lg font-semibold mb-4">Share this post</h3>
+          <ShareButtons
+            url={`${process.env.NEXT_PUBLIC_APP_URL}/blogs/${slug}`}
+            title={post.title}
+          />
+        </div>
+
         {/* Comments Section */}
         <section className="border-t border-gray-200 pt-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">
             Comments ({comments.length})
           </h2>
 
-          {/* Comment Form */}
+          {/* Comment Form with Authentication Guard */}
           <div className="mb-8">
-            <CommentForm postId={post.id} userId={userId} />
+            <AuthGuard
+              fallback={<AuthPrompt action="comment" />}
+              showPrompt={false}
+            >
+              {userId && <CommentForm postId={post.id} userId={userId} />}
+            </AuthGuard>
           </div>
 
-          {/* Comments List */}
+          {/* Auth Status Indicator */}
+          <div className="mb-8">
+            <AuthGuard
+              fallback={<AuthPromptCompact action="comment" />}
+              showPrompt={false}
+            >
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                <p className="text-sm text-green-700">
+                  ✅ You are signed in! Feel free to comment and engage.
+                </p>
+              </div>
+            </AuthGuard>
+          </div>
+
+          {/* Comments List - Always visible */}
           <div className="space-y-6">
             {commentsWithReplies.length === 0 ? (
               <p className="text-gray-500 text-center py-8">

@@ -5,6 +5,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import Button from "@/components/ui/Button";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function LandingPage() {
   const router = useRouter();
@@ -46,15 +47,17 @@ export default function LandingPage() {
 
               <div className="flex flex-col sm:flex-row gap-4 pt-2 justify-center lg:justify-center">
                 {/* Primary CTA Button - Accent filled */}
-                <Button
-                  variant="accent"
-                  style="filled"
-                  size="lg"
-                  onClick={handleGetStarted}
-                  className="geist font-bold tracking-wide"
-                >
-                  Begin your first Wryte
-                </Button>
+                <Link href="/sign-up">
+                  <Button
+                    variant="accent"
+                    style="filled"
+                    size="lg"
+                    onClick={handleGetStarted}
+                    className="geist font-bold tracking-wide"
+                  >
+                    Begin your first Wryte
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
