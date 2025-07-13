@@ -1,3 +1,7 @@
+/*
+ * Clerk Middleware for Authentication
+ */
+
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
 // Define routes that require authentication
@@ -6,10 +10,8 @@ const isProtectedRoute = createRouteMatcher([
   "/blogs/edit/(.*)", // Editing posts
   "/dashboard(.*)", // Dashboard routes
   "/profile(.*)", // Profile routes
-  // Add other protected routes as needed
 ]);
 
-// Custom function to check if it's the exact /blogs route (not individual posts)
 const isBlogsListingRoute = (pathname: string) => {
   return pathname === "/blogs" || pathname === "/blogs/";
 };
@@ -17,14 +19,13 @@ const isBlogsListingRoute = (pathname: string) => {
 export default clerkMiddleware(async (auth, req) => {
   const { pathname } = req.nextUrl;
 
-  // Protect the /blogs listing route specifically
   if (isBlogsListingRoute(pathname)) {
-    await auth.protect();
+    await auth.protect(); // Only let authenticated users access /blogs
   }
 
   // Protect other routes that require authentication
   if (isProtectedRoute(req)) {
-    await auth.protect();
+    await auth.protect(); // Only let authenticated users access matched protected routes
   }
 });
 
