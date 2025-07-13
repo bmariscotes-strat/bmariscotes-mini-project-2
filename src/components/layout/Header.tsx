@@ -13,8 +13,8 @@ export default function Header() {
   const isActive = (path: string) => pathname === path;
 
   const navLinks = [
-    { href: "/about", label: "About" },
-    { href: "/contact", label: "Contact" },
+    { href: "/", label: "About" },
+    { href: "/sign-up", label: "Register" },
   ];
 
   return (
@@ -41,7 +41,7 @@ export default function Header() {
                   ? "text-primary-600 font-semibold"
                   : "hover:text-primary-600"
               }`}
-              scroll={false} // Disable default scroll behavior for smooth scrolling
+              scroll={false}
             >
               {link.label}
             </Link>
