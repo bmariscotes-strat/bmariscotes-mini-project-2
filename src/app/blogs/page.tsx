@@ -152,6 +152,14 @@ export default async function Blog() {
                     <h2 className="text-3xl font-bold mb-2 tracking-wider baskervville text-primary">
                       {post.title}
                     </h2>
+
+                    {/* Author Information */}
+                    <p className="text-gray-600 text-sm mb-3 baskervville ">
+                      Written by{" "}
+                      {`${post.author.first_name || ""} ${
+                        post.author.last_name || ""
+                      }`.trim() || "Anonymous"}
+                    </p>
                   </div>
 
                   <div className="text-gray-700 mb-4 leading-relaxed text-sm">

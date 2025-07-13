@@ -1,10 +1,25 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { posts, postImages, comments, reactions } from "@/lib/schema";
+import { posts, postImages, comments, reactions, users } from "@/lib/schema";
 import { eq, and, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import slugify from "slugify";
+
+interface PostWithAuthor {
+  id: number;
+  title: string;
+  slug: string;
+  content: string;
+  user_id: number;
+  created_at: Date | null;
+  updated_at: Date | null;
+  author: {
+    first_name: string | null;
+    last_name: string | null;
+    email: string;
+  };
+}
 
 /**
  * Create: Inserts a new post with multiple image URLs.
@@ -95,9 +110,27 @@ export async function insertPostWithImages(
 /**
  * Read: Get all posts with their images.
  */
-export async function getAllPosts() {
+export async function getAllPosts(): Promise<PostWithAuthor[]> {
   try {
-    const postsData = await db.select().from(posts).orderBy(posts.created_at);
+    const postsData = await db
+      .select({
+        id: posts.id,
+        title: posts.title,
+        slug: posts.slug,
+        content: posts.content,
+        user_id: posts.user_id,
+        created_at: posts.created_at,
+        updated_at: posts.updated_at,
+        author: {
+          first_name: users.first_name,
+          last_name: users.last_name,
+          email: users.email,
+        },
+      })
+      .from(posts)
+      .innerJoin(users, eq(posts.user_id, users.id))
+      .orderBy(posts.created_at);
+
     return postsData;
   } catch (error) {
     console.error("Error fetching posts:", error);

@@ -5,6 +5,7 @@ import {
   getRepliesByCommentId,
 } from "@/lib/actions/comments";
 import { getReactionCounts, getUserReaction } from "@/lib/actions/reactions";
+import { getUserById } from "@/lib/actions/users"; // Add this import
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import ReactionButton from "@/components/ui/ReactionButton";
@@ -22,6 +23,14 @@ interface BlogPostPageProps {
   }>;
 }
 
+interface Author {
+  id: number;
+  first_name: string | null;
+  last_name: string | null;
+  email: string;
+  created_at: Date | null;
+}
+
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { slug } = await params;
 
@@ -31,6 +40,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     if (!post) {
       notFound();
     }
+
+    // Get the post author's information
+    const postAuthor = await getUserById(post.user_id);
 
     // Get comments and reactions
     const comments = await getCommentsByPostId(post.id);
@@ -68,6 +80,29 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         };
       })
     );
+
+    // Helper function to format author name
+    const getAuthorName = (author: Author | null) => {
+      if (!author) return "Unknown Author";
+
+      // If both first and last name are available
+      if (author.first_name && author.last_name) {
+        return `${author.first_name} ${author.last_name}`;
+      }
+
+      // If only first name is available
+      if (author.first_name) {
+        return author.first_name;
+      }
+
+      // If only last name is available
+      if (author.last_name) {
+        return author.last_name;
+      }
+
+      // Fallback to email if no names are available
+      return author.email || "Unknown Author";
+    };
 
     return (
       <div className="max-w-5xl mx-auto px-4 py-8">
@@ -115,6 +150,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
           <div className="flex items-center justify-between">
             <div className="flex items-center text-gray-600 space-x-4">
+              <span className="text-sm font-medium">
+                By {getAuthorName(postAuthor)}
+              </span>
               <time className="text-sm">
                 Published{" "}
                 {post.created_at &&
@@ -185,20 +223,6 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               {userId && <CommentForm postId={post.id} userId={userId} />}
             </AuthGuard>
           </div>
-
-          {/* Auth Status Indicator */}
-          {/* <div className="mb-8">
-            <AuthGuard
-              fallback={<AuthPromptCompact action="comment" />}
-              showPrompt={false}
-            >
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                <p className="text-sm text-green-700">
-                  ✅ You are signed in! Feel free to comment and engage.
-                </p>
-              </div>
-            </AuthGuard>
-          </div> */}
 
           {/* Comments List - Always visible */}
           <div className="space-y-6">

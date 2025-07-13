@@ -6,20 +6,36 @@ import { eq } from "drizzle-orm";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import type { User } from "@clerk/nextjs/server";
 
+interface UserData {
+  id: number;
+  first_name: string | null;
+  last_name: string | null;
+  email: string;
+  created_at: Date | null;
+}
+
 /**
  * Get a user by ID
  * @param id number - user id
  * @returns user object or null if not found
  */
-export async function getUserById(id: number) {
+export async function getUserById(userId: number): Promise<UserData | null> {
   try {
-    const user = await db.query.users.findFirst({
-      where: (u, { eq }) => eq(u.id, id),
-    });
+    const user = await db
+      .select({
+        id: users.id,
+        first_name: users.first_name,
+        last_name: users.last_name,
+        email: users.email,
+        created_at: users.created_at,
+      })
+      .from(users)
+      .where(eq(users.id, userId))
+      .limit(1);
 
-    return user;
+    return user[0] || null;
   } catch (error) {
-    console.error("Error fetching user:", error);
+    console.error("Error fetching user by ID:", error);
     return null;
   }
 }
