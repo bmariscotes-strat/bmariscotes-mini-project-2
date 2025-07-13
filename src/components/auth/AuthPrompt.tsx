@@ -56,7 +56,7 @@ export function AuthPrompt({
 
       <div className="flex gap-3 justify-center">
         <SignUpButton mode="modal">
-          <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+          <button className="bg-primary hover:bg-primary/50 text-white px-6 py-2 rounded-lg font-medium transition-colors">
             Sign Up
           </button>
         </SignUpButton>
@@ -91,7 +91,7 @@ export function AuthPromptCompact({
 
       <div className="flex gap-2 justify-center">
         <SignUpButton mode="modal">
-          <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
+          <button className="bg-primary hover:bg-primary/50 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
             Sign Up
           </button>
         </SignUpButton>
