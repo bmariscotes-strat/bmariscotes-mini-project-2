@@ -22,19 +22,11 @@ import {
   generateBlogPostStructuredData,
   StructuredDataScript,
 } from "@/lib/utils/structured-data";
-
+import { Author } from "@/interface/types";
 interface BlogPostPageProps {
   params: Promise<{
     slug: string;
   }>;
-}
-
-interface Author {
-  id: number;
-  first_name: string | null;
-  last_name: string | null;
-  email: string;
-  created_at: Date | null;
 }
 
 // Helper function to format author name

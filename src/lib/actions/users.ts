@@ -5,21 +5,14 @@ import { users } from "@/lib/schema";
 import { eq } from "drizzle-orm";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import type { User } from "@clerk/nextjs/server";
-
-interface UserData {
-  id: number;
-  first_name: string | null;
-  last_name: string | null;
-  email: string;
-  created_at: Date | null;
-}
+import { Author } from "@/interface/types";
 
 /**
  * Get a user by ID
  * @param id number - user id
  * @returns user object or null if not found
  */
-export async function getUserById(userId: number): Promise<UserData | null> {
+export async function getUserById(userId: number): Promise<Author | null> {
   try {
     const user = await db
       .select({

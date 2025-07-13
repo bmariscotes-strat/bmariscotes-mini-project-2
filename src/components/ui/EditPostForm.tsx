@@ -23,16 +23,7 @@ import NextImage from "next/image";
 import { updatePost } from "@/lib/actions/posts";
 import Placeholder from "@tiptap/extension-placeholder";
 import Link from "next/link";
-
-export interface Post {
-  id: number;
-  title: string;
-  slug: string;
-  content: string;
-  user_id: number;
-  created_at: Date | null;
-  updated_at: Date | null;
-}
+import { Post } from "@/interface/types";
 
 interface EditPostFormProps {
   post: Post;

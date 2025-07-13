@@ -1,43 +1,12 @@
 // lib/utils/structured-data.ts
 import React from "react";
-
-interface Author {
-  id: number;
-  first_name: string | null;
-  last_name: string | null;
-  email: string;
-  created_at: Date | null;
-}
-
-interface Post {
-  id: number;
-  title: string;
-  content: string;
-  slug: string;
-  user_id: number;
-  created_at: Date | null;
-  updated_at: Date | null;
-}
-
-interface PostImage {
-  id: number;
-  post_id: number;
-  image_url: string;
-  created_at: Date | null;
-}
-
-interface ReactionCounts {
-  upvotes: number;
-  downvotes: number;
-}
-
-interface Comment {
-  id: number;
-  post_id: number;
-  user_id: number;
-  content: string;
-  created_at: Date | null;
-}
+import {
+  Author,
+  Post,
+  Comment,
+  PostImage,
+  ReactionCounts,
+} from "@/interface/types";
 
 interface StructuredDataProps {
   post: Post;
