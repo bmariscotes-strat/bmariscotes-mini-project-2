@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useToastContext } from "@/providers/ToastProvider";
 
 interface ShareButtonsProps {
   url: string;
@@ -10,6 +11,7 @@ interface ShareButtonsProps {
 
 export function ShareButtons({ url, title }: ShareButtonsProps) {
   const [isClient, setIsClient] = useState(false);
+  const { showToast } = useToastContext();
 
   useEffect(() => {
     setIsClient(true);
@@ -24,8 +26,10 @@ export function ShareButtons({ url, title }: ShareButtonsProps) {
     if (platform === "native" && "share" in navigator) {
       try {
         await navigator.share(shareData);
+        showToast("Content shared successfully!", "success");
       } catch (error) {
         console.log("Error sharing:", error);
+        showToast("Failed to share content", "error");
       }
     } else {
       // Fallback to social media URLs
@@ -56,6 +60,7 @@ export function ShareButtons({ url, title }: ShareButtonsProps) {
           "_blank",
           "noopener,noreferrer"
         );
+        showToast(`Opening ${platform} share dialog`, "info");
       }
     }
   };
@@ -63,10 +68,10 @@ export function ShareButtons({ url, title }: ShareButtonsProps) {
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(url);
-      // You could add a toast notification here
-      alert("Link copied to clipboard!");
+      showToast("Link copied to clipboard!", "success");
     } catch (error) {
       console.error("Failed to copy:", error);
+      showToast("Failed to copy link", "error");
     }
   };
 

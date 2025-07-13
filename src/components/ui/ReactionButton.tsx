@@ -4,6 +4,7 @@
 import { useState, useTransition } from "react";
 import { toggleReaction } from "@/lib/actions/reactions";
 import { ChevronUpIcon, ChevronDownIcon } from "lucide-react";
+import { useToastContext } from "@/providers/ToastProvider";
 
 interface ReactionButtonProps {
   targetType: "post" | "comment" | "reply";
@@ -26,11 +27,13 @@ export default function ReactionButton({
   const [downvotes, setDownvotes] = useState(initialDownvotes);
   const [currentReaction, setCurrentReaction] = useState(userReaction);
   const [isPending, startTransition] = useTransition();
+  const { showToast } = useToastContext();
 
   const handleReaction = (type: "upvote" | "downvote") => {
     if (!userId) {
-      // Handle unauthenticated user - you might want to redirect to login
+      // Handle unauthenticated user
       alert("Please log in to react to posts");
+      showToast("Please log in to react to posts", "info");
       return;
     }
 

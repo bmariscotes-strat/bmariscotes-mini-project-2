@@ -13,6 +13,7 @@ import {
 } from "@/lib/actions/comments";
 import { useRouter } from "next/navigation";
 import { MoreVertical, Pencil, Trash2 } from "lucide-react";
+import { useToastContext } from "@/providers/ToastProvider";
 
 interface CommentProps {
   comment: {
@@ -63,6 +64,7 @@ export default function Comment({
 
   const commentDropdownRef = useRef<HTMLDivElement>(null);
   const replyDropdownRef = useRef<HTMLDivElement>(null);
+  const { showToast } = useToastContext();
 
   const isOwner = userId === comment.user_id;
 
@@ -103,7 +105,7 @@ export default function Comment({
         router.refresh();
       } catch (error) {
         console.error("Error updating comment:", error);
-        alert("Failed to update comment");
+        showToast("Failed to update comment", "error");
       }
     });
   };
@@ -121,7 +123,7 @@ export default function Comment({
         router.refresh();
       } catch (error) {
         console.error("Error deleting comment:", error);
-        alert("Failed to delete comment");
+        showToast("Failed to delete comment", "error");
         setShowDeleteCommentModal(false);
       }
     });
@@ -144,7 +146,7 @@ export default function Comment({
         router.refresh();
       } catch (error) {
         console.error("Error updating reply:", error);
-        alert("Failed to update reply");
+        showToast("Failed to update reply", "error");
       }
     });
   };
@@ -166,7 +168,7 @@ export default function Comment({
         router.refresh();
       } catch (error) {
         console.error("Error deleting reply:", error);
-        alert("Failed to delete reply");
+        showToast("Failed to delete reply", "error");
         setShowDeleteReplyModal(false);
         setReplyToDelete(null);
       }

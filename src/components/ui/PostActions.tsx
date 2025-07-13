@@ -3,15 +3,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  Edit3,
-  Trash2,
-  MoreHorizontal,
-  X,
-  CheckCircle,
-  AlertCircle,
-} from "lucide-react";
+import { Edit3, Trash2, MoreHorizontal } from "lucide-react";
 import { deletePost } from "@/lib/actions/posts";
+import { useToastContext } from "@/providers/ToastProvider";
 
 interface PostActionsProps {
   postId: number;
@@ -27,20 +21,9 @@ export default function PostActions({
   const [showDropdown, setShowDropdown] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [toast, setToast] = useState<{
-    message: string;
-    type: "success" | "error";
-    show: boolean;
-  }>({ message: "", type: "success", show: false });
 
+  const { showToast } = useToastContext();
   const router = useRouter();
-
-  const showToast = (message: string, type: "success" | "error") => {
-    setToast({ message, type, show: true });
-    setTimeout(() => {
-      setToast((prev) => ({ ...prev, show: false }));
-    }, 4000);
-  };
 
   const handleEdit = () => {
     router.push(`/blogs/${postSlug}/edit`);
@@ -54,9 +37,6 @@ export default function PostActions({
 
       // Redirect immediately to avoid 404
       router.push("/blogs");
-
-      // Note: Toast won't show since we're redirecting, but that's okay
-      // The user will see the post is gone from the list
     } catch (error) {
       console.error("Error deleting post:", error);
       showToast("Error deleting post. Please try again.", "error");
@@ -67,30 +47,6 @@ export default function PostActions({
 
   return (
     <>
-      {/* Toast Notification */}
-      {toast.show && (
-        <div
-          className={`fixed top-4 right-4 z-50 flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg border transform transition-all duration-300 ease-in-out ${
-            toast.type === "success"
-              ? "bg-green-50 border-green-200 text-green-800"
-              : "bg-red-50 border-red-200 text-red-800"
-          }`}
-        >
-          {toast.type === "success" ? (
-            <CheckCircle size={20} className="text-green-500" />
-          ) : (
-            <AlertCircle size={20} className="text-red-500" />
-          )}
-          <span className="font-medium">{toast.message}</span>
-          <button
-            onClick={() => setToast((prev) => ({ ...prev, show: false }))}
-            className="ml-2 text-gray-400 hover:text-gray-600"
-          >
-            <X size={16} />
-          </button>
-        </div>
-      )}
-
       {/* Actions Dropdown */}
       <div className="relative">
         <button

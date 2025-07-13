@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { createComment, createReply } from "@/lib/actions/comments";
 import { useRouter } from "next/navigation";
+import { useToastContext } from "@/providers/ToastProvider";
 
 interface CommentFormProps {
   postId?: number;
@@ -22,12 +23,13 @@ export default function CommentForm({
   const [content, setContent] = useState("");
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+  const { showToast } = useToastContext();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!userId) {
-      alert("Please log in to comment");
+      showToast("Failed to delete reply", "info");
       return;
     }
 

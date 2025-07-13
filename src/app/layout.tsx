@@ -3,6 +3,7 @@ import { Baskervville, Geist, Geist_Mono } from "next/font/google";
 import "../styles/globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import Head from "next/head";
+import { ToastProvider } from "@/providers/ToastProvider";
 
 const baskervville = Baskervville({
   subsets: ["latin"],
@@ -39,7 +40,7 @@ export default function RootLayout({
         <body
           className={`${geist.variable} ${geistMono.variable} ${baskervville.variable} antialiased`}
         >
-          {children}
+          <ToastProvider>{children}</ToastProvider>
         </body>
       </html>
     </ClerkProvider>
