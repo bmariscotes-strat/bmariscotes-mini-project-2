@@ -197,6 +197,21 @@ export async function getPostBySlug(slug: string) {
   }
 }
 
+export async function getPostImages(postId: number) {
+  try {
+    const images = await db
+      .select()
+      .from(postImages)
+      .where(eq(postImages.post_id, postId))
+      .limit(1); // Just get one image
+
+    return images;
+  } catch (error) {
+    console.error("Error fetching post images:", error);
+    return [];
+  }
+}
+
 /**
  * Debug: Search posts by slug pattern
  */
