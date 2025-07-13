@@ -14,6 +14,7 @@ import {
 import { useRouter } from "next/navigation";
 import { MoreVertical, Pencil, Trash2 } from "lucide-react";
 import { useToastContext } from "@/providers/ToastProvider";
+import { AuthGuard } from "@/components/auth/AuthGuard";
 
 interface CommentProps {
   comment: {
@@ -266,25 +267,27 @@ export default function Comment({
             <p className="text-gray-700 mb-3">{comment.content}</p>
           )}
 
-          {!isEditing && (
-            <div className="flex items-center justify-between">
-              <ReactionButton
-                targetType="comment"
-                targetId={comment.id}
-                userId={userId}
-                initialUpvotes={reactionCounts.upvotes}
-                initialDownvotes={reactionCounts.downvotes}
-                userReaction={userReaction}
-              />
+          <AuthGuard showPrompt={false}>
+            {!isEditing && (
+              <div className="flex items-center justify-between">
+                <ReactionButton
+                  targetType="comment"
+                  targetId={comment.id}
+                  userId={userId}
+                  initialUpvotes={reactionCounts.upvotes}
+                  initialDownvotes={reactionCounts.downvotes}
+                  userReaction={userReaction}
+                />
 
-              <button
-                onClick={() => setShowReplyForm(!showReplyForm)}
-                className="text-blue-600 hover:text-blue-800 text-sm font-medium"
-              >
-                Reply
-              </button>
-            </div>
-          )}
+                <button
+                  onClick={() => setShowReplyForm(!showReplyForm)}
+                  className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                >
+                  Reply
+                </button>
+              </div>
+            )}
+          </AuthGuard>
 
           {showReplyForm && (
             <div className="mt-4">
