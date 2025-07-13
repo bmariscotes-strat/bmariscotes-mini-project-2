@@ -340,3 +340,9 @@ body {
 .cl-header {
   display: none !important;
 }
+
+article ol,
+ul,
+menu {
+  list-style: disc;
+}

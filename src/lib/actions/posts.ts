@@ -15,6 +15,7 @@ interface PostWithAuthor {
   created_at: Date | null;
   updated_at: Date | null;
   author: {
+    id: number;
     first_name: string | null;
     last_name: string | null;
     email: string;
@@ -122,6 +123,7 @@ export async function getAllPosts(): Promise<PostWithAuthor[]> {
         created_at: posts.created_at,
         updated_at: posts.updated_at,
         author: {
+          id: users.id,
           first_name: users.first_name,
           last_name: users.last_name,
           email: users.email,

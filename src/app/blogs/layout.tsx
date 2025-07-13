@@ -51,7 +51,7 @@ export default function BlogLayout({ children }: { children: ReactNode }) {
                 {isDropdownOpen && (
                   <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden z-50">
                     <Link
-                      href="/my-blogs"
+                      href="/blogs/my-blogs"
                       className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-primary/10 cursor-pointer"
                     >
                       <NotebookPen className="w-4 h-4 mr-2 text-primary" />

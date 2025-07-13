@@ -277,11 +277,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             )}
           </div>
 
-          <div className="flex items-center justify-between">
-            <div className="flex items-center text-gray-600 space-x-4">
+          <div className="flex flex-row items-center justify-between text-gray-600 gap-2">
+            {/* Left side — Author and dates */}
+            <div className="flex flex-col md:flex-row md:items-center md:gap-4 space-y-0.5 md:space-y-0">
               <span className="text-sm font-medium">
                 By {getAuthorName(postAuthor)}
               </span>
+
               <time
                 className="text-sm"
                 dateTime={
@@ -315,16 +317,18 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 )}
             </div>
 
-            {/* Post Reactions - only show if user is logged in */}
+            {/* Right side — Reaction buttons */}
             {userId && (
-              <ReactionButton
-                targetType="post"
-                targetId={post.id}
-                userId={userId}
-                initialUpvotes={postReactionCounts.upvotes}
-                initialDownvotes={postReactionCounts.downvotes}
-                userReaction={userReaction?.type || null}
-              />
+              <div className="shrink-0">
+                <ReactionButton
+                  targetType="post"
+                  targetId={post.id}
+                  userId={userId}
+                  initialUpvotes={postReactionCounts.upvotes}
+                  initialDownvotes={postReactionCounts.downvotes}
+                  userReaction={userReaction?.type || null}
+                />
+              </div>
             )}
           </div>
         </header>
