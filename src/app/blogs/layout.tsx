@@ -4,6 +4,7 @@ import { ReactNode, useState } from "react";
 import Image from "next/image";
 import { UserCircle, LogOut, NotebookPen } from "lucide-react";
 import { SignOutButton } from "@clerk/nextjs";
+import { AuthGuard } from "@/components/auth/AuthGuard";
 
 /**
  * Blog layout wrapper with sticky header
@@ -37,38 +38,40 @@ export default function BlogLayout({ children }: { children: ReactNode }) {
               About
             </Link>
 
-            {/* User Dropdown */}
-            <div className="relative">
-              <button
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="p-1 rounded-full hover:bg-gray-100 transition"
-              >
-                <UserCircle className="w-6 h-6 text-primary" />
-              </button>
+            {/* User Dropdown - Only show when authenticated */}
+            <AuthGuard showPrompt={false}>
+              <div className="relative">
+                <button
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  className="p-1 rounded-full hover:bg-gray-100 transition"
+                >
+                  <UserCircle className="w-6 h-6 text-primary" />
+                </button>
 
-              {isDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden z-50">
-                  <Link
-                    href="/my-blogs"
-                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-primary/10 cursor-pointer"
-                  >
-                    <NotebookPen className="w-4 h-4 mr-2 text-primary" />
-                    My Blogs
-                  </Link>
-                  <SignOutButton>
-                    <button
-                      onClick={() => {
-                        console.log("Logging out...");
-                      }}
-                      className="flex items-center w-full px-4 py-2 text-sm hover:bg-primary/10 cursor-pointer"
+                {isDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden z-50">
+                    <Link
+                      href="/my-blogs"
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-primary/10 cursor-pointer"
                     >
-                      <LogOut className="w-4 h-4 mr-2 text-primary" />
-                      Log Out
-                    </button>
-                  </SignOutButton>
-                </div>
-              )}
-            </div>
+                      <NotebookPen className="w-4 h-4 mr-2 text-primary" />
+                      My Blogs
+                    </Link>
+                    <SignOutButton>
+                      <button
+                        onClick={() => {
+                          console.log("Logging out...");
+                        }}
+                        className="flex items-center w-full px-4 py-2 text-sm hover:bg-primary/10 cursor-pointer"
+                      >
+                        <LogOut className="w-4 h-4 mr-2 text-primary" />
+                        Log Out
+                      </button>
+                    </SignOutButton>
+                  </div>
+                )}
+              </div>
+            </AuthGuard>
           </nav>
         </div>
       </header>
