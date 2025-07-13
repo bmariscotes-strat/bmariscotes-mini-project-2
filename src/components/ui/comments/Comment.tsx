@@ -2,7 +2,7 @@
 
 import { useState, useTransition, useRef, useEffect } from "react";
 import { formatDistanceToNow } from "date-fns";
-import CommentForm from "@/components/ui/CommentForm";
+import CommentForm from "@/components/ui/comments/CommentForm";
 import ReactionButton from "@/components/ui/ReactionButton";
 import ConfirmationModal from "@/components/widgets/ConfirmationModal";
 import {
@@ -242,7 +242,7 @@ export default function Comment({
               <textarea
                 value={editContent}
                 onChange={(e) => setEditContent(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                className="w-full px-3 py-2 border border-gray-300 bg-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                 rows={3}
                 disabled={isPending}
               />
@@ -250,7 +250,7 @@ export default function Comment({
                 <button
                   onClick={handleUpdateComment}
                   disabled={isPending || !editContent.trim()}
-                  className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-3 py-1 bg-primary text-white rounded text-sm hover:bg-primary/80 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isPending ? "Saving..." : "Save"}
                 </button>
