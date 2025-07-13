@@ -1,6 +1,6 @@
 "use client";
 
-import { SignInButton, SignUpButton } from "@clerk/nextjs";
+import Link from "next/link";
 import { MessageCircle, Heart, Share2, User } from "lucide-react";
 
 interface AuthPromptProps {
@@ -55,17 +55,17 @@ export function AuthPrompt({
       </p>
 
       <div className="flex gap-3 justify-center">
-        <SignUpButton mode="modal">
+        <Link href="/sign-up">
           <button className="bg-primary hover:bg-primary/50 text-white px-6 py-2 rounded-lg font-medium transition-colors">
             Sign Up
           </button>
-        </SignUpButton>
+        </Link>
 
-        <SignInButton mode="modal">
+        <Link href="/sign-in">
           <button className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-2 rounded-lg font-medium transition-colors">
             Sign In
           </button>
-        </SignInButton>
+        </Link>
       </div>
 
       <p className="text-xs text-gray-500 mt-4">
@@ -90,17 +90,17 @@ export function AuthPromptCompact({
       </p>
 
       <div className="flex gap-2 justify-center">
-        <SignUpButton mode="modal">
+        <Link href="/sign-up">
           <button className="bg-primary hover:bg-primary/50 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
             Sign Up
           </button>
-        </SignUpButton>
+        </Link>
 
-        <SignInButton mode="modal">
+        <Link href="/sign-in">
           <button className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-md text-sm font-medium transition-colors">
             Sign In
           </button>
-        </SignInButton>
+        </Link>
       </div>
     </div>
   );
