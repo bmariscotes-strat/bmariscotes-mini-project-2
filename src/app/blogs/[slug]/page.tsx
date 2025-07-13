@@ -1,4 +1,3 @@
-// app/blogs/[slug]/page.tsx
 import { getPostBySlug } from "@/lib/actions/posts";
 import {
   getCommentsByPostId,
@@ -11,12 +10,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import ReactionButton from "@/components/ui/ReactionButton";
-import CommentForm from "@/components/ui/CommentForm";
-import Comment from "@/components/ui/Comment";
-import PostActions from "@/components/ui/PostActions";
+import CommentForm from "@/components/ui/comments/CommentForm";
+import Comment from "@/components/ui/comments/Comment";
+import PostActions from "@/components/ui/post/PostActions";
 import { AuthGuard } from "@/components/auth/AuthGuard";
 import { AuthPrompt } from "@/components/auth/AuthPrompt";
-import { ShareButtons } from "@/components/ui/ShareButtons";
+import { ShareButtons } from "@/components/ui/post/ShareButtons";
 import { getCurrentUser } from "@/lib/actions/users";
 import {
   generateBlogPostStructuredData,
@@ -29,7 +28,11 @@ interface BlogPostPageProps {
   }>;
 }
 
-// Helper function to format author name
+/**
+ * Helper Functions
+ */
+
+// Format author name
 const getAuthorName = (author: Author | null) => {
   if (!author) return "Unknown Author";
 
@@ -52,16 +55,15 @@ const getAuthorName = (author: Author | null) => {
   return author.email || "Unknown Author";
 };
 
-/**
- * Helper Functions
- */
-
+// Removes all HTML tags and replaces HTML entities with spaces from a string, returning clean plain text.
 const extractTextFromHtml = (html: string): string => {
   return html
     .replace(/<[^>]*>/g, "") // Remove HTML tags
     .replace(/&[^;]+;/g, " ") // Replace HTML entities
     .trim();
 };
+
+// Truncate Text
 const truncateText = (text: string, maxLength: number = 160): string => {
   if (text.length <= maxLength) return text;
   return text.substring(0, maxLength).replace(/\s+\S*$/, "") + "...";
@@ -69,6 +71,9 @@ const truncateText = (text: string, maxLength: number = 160): string => {
 
 /**
  * Generation of Metadata
+ * Fetches post, author, and image data by slug, then generates
+ * SEO-friendly metadata (title, description, Open Graph, Twitter card,
+ * canonical link)for the blog post page.
  */
 
 export async function generateMetadata({
@@ -217,6 +222,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       })
     );
 
+    /**
+     * Create SEO-friendly structured data (JSON-LD)
+     */
     const structuredData = generateBlogPostStructuredData({
       post,
       postAuthor,

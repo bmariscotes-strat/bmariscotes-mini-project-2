@@ -1,3 +1,7 @@
+/*
+ * Route for Cloudinary API Endpoint
+ */
+
 import { NextResponse } from "next/server";
 import { insertPostWithImages } from "@/lib/actions/posts";
 

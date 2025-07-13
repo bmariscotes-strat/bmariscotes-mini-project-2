@@ -27,6 +27,7 @@ export default function SignInPage() {
           </div>
 
           <div className="bg-white py-8">
+            {/* Clerk Sign In */}
             <SignIn
               afterSignInUrl="/blogs"
               redirectUrl="/blogs"
@@ -34,10 +35,9 @@ export default function SignInPage() {
                 elements: {
                   rootBox: "mx-auto",
                   card: "shadow-none border-0",
-                  header: "hidden", // Hide entire header
+                  header: "hidden",
                   headerTitle: "hidden",
                   headerSubtitle: "hidden",
-                  // Remove any spacing from header area
                   cardBox: "pt-0",
                   developmentModeWarning: "hidden",
                   footerAttribution: "hidden",

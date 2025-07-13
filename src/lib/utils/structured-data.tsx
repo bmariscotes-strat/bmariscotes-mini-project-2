@@ -1,4 +1,3 @@
-// lib/utils/structured-data.ts
 import React from "react";
 import {
   Author,
@@ -19,6 +18,10 @@ interface StructuredDataProps {
   getAuthorName: (author: Author | null) => string;
 }
 
+/**
+ * Generates Schema.org structured data for a blog post
+ * Improves SEO by providing search engines with rich metadata
+ */
 export function generateBlogPostStructuredData({
   post,
   postAuthor,
@@ -41,9 +44,11 @@ export function generateBlogPostStructuredData({
       "@type": "Person",
       name: getAuthorName(postAuthor),
     },
+    // Optional: Only include dates if they exist
     ...(post.created_at && {
       datePublished: new Date(post.created_at).toISOString(),
     }),
+    // Only include dateModified if it differs from creation date
     ...(post.updated_at &&
       post.updated_at !== post.created_at && {
         dateModified: new Date(post.updated_at).toISOString(),
@@ -61,15 +66,17 @@ export function generateBlogPostStructuredData({
         url: "https://wryte.vercel.app/branding/logo.png",
       },
     },
+    // Optional: Include image metadata if available
     ...(postImage && {
       image: {
         "@type": "ImageObject",
         url: postImage.image_url,
-        width: 1200,
+        width: 1200, // Standard social media image dimensions
         height: 630,
       },
     }),
     commentCount: comments.length,
+    // Engagement metrics for rich snippets
     interactionStatistic: [
       {
         "@type": "InteractionCounter",
@@ -90,7 +97,10 @@ export function generateBlogPostStructuredData({
   };
 }
 
-// Component for rendering the structured data
+/**
+ * React component that renders structured data as JSON-LD script
+ * Should be placed in the document head for SEO
+ */
 interface StructuredDataScriptProps {
   data: object;
 }

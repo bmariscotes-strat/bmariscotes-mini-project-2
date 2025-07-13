@@ -2,38 +2,11 @@
 import { getAllPosts } from "@/lib/actions/posts";
 import { getPostStats } from "@/lib/actions/reactions";
 import Link from "next/link";
-import PostEditor from "@/components/ui/PostEditor";
+import PostEditor from "@/components/ui/post/PostEditor";
 import Image from "next/image";
 import { MessageCircle, ChevronUp, ChevronDown } from "lucide-react";
 import { getCurrentUser } from "@/lib/actions/users";
-
-// Helper function to extract plain text from HTML content
-function extractPlainText(html: string): string {
-  return html
-    .replace(/<[^>]*>/g, "")
-    .replace(/&nbsp;/g, " ")
-    .trim();
-}
-
-// Helper function to truncate content
-function truncateContent(content: string, maxLength: number = 700): string {
-  const plainText = extractPlainText(content);
-  if (plainText.length <= maxLength) return plainText;
-  return plainText.substring(0, maxLength) + "...";
-}
-
-// Helper function to extract all images from HTML content
-function extractAllImages(html: string): string[] {
-  const imgMatches = html.match(/<img[^>]+src="([^"]+)"/g);
-  if (!imgMatches) return [];
-
-  return imgMatches
-    .map((match) => {
-      const srcMatch = match.match(/src="([^"]+)"/);
-      return srcMatch ? srcMatch[1] : "";
-    })
-    .filter(Boolean);
-}
+import { truncateContent, extractAllImages } from "@/lib/utils/helper";
 
 export default async function MyBlogs() {
   const user = await getCurrentUser();
@@ -80,7 +53,7 @@ export default async function MyBlogs() {
       <div className="space-y-6">
         <div className="bg-primary/5 border border-primary/30 rounded-md p-6 text-center space-y-2">
           <h1 className="text-4xl font-extrabold text-primary tracking-tight">
-            My Blogs
+            My Wrytes
           </h1>
           <p className="text-gray-600 text-base">
             Wryter {user.first_name || "Writer"}! Here are your published
@@ -104,14 +77,14 @@ export default async function MyBlogs() {
           <div className="mb-4">
             <p className="text-sm text-gray-600">
               Showing {postsWithStats.length}{" "}
-              {postsWithStats.length === 1 ? "post" : "posts"}
+              {postsWithStats.length === 1 ? "blog" : "blogs"}
             </p>
           </div>
         )}
 
         {postsWithStats.map((post) => {
           const images = extractAllImages(post.content);
-          const truncatedContent = truncateContent(post.content);
+          const truncatedContent = truncateContent(post.content, 700);
           const isNewPost =
             post.created_at &&
             (Date.now() - new Date(post.created_at).getTime()) / 1000 < 30;

@@ -1,7 +1,6 @@
-// app/blogs/[slug]/edit/page.tsx
 import { getPostBySlug } from "@/lib/actions/posts";
 import { notFound, redirect } from "next/navigation";
-import EditPostForm from "@/components/ui/EditPostForm";
+import EditPostForm from "@/components/ui/post/EditPostForm";
 import { getCurrentUser } from "@/lib/actions/users";
 
 interface EditPostPageProps {
@@ -36,12 +35,13 @@ export default async function EditPostPage({ params }: EditPostPageProps) {
       notFound();
     }
 
+    // Assignment of current user
     const currentUser = await getCurrentUser();
     if (!currentUser) {
       throw new Error("Please log in to create a post");
     }
 
-    const userId = currentUser.id; // This should come from your authentication system
+    const userId = currentUser.id;
 
     // Check if current user is the author of the post
     if (post.user_id !== userId) {

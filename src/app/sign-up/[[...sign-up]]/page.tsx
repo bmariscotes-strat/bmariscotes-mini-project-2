@@ -20,6 +20,7 @@ export default function SignUpPage() {
           </div>
 
           <div className="bg-white py-8 sm:rounded-lg sm:px-10">
+            {/* Clerk Sign Up */}
             <SignUp
               afterSignUpUrl="/blogs"
               appearance={{
@@ -36,10 +37,9 @@ export default function SignUpPage() {
                 elements: {
                   rootBox: "mx-auto",
                   card: "shadow-none border-0",
-                  header: "hidden", // Hide entire header
+                  header: "hidden",
                   headerTitle: "hidden",
                   headerSubtitle: "hidden",
-                  // Remove any spacing from header area
                   cardBox: "pt-0",
                   developmentModeWarning: "hidden",
                   footerAttribution: "hidden",

@@ -1,3 +1,7 @@
+/*
+ * Webhook for Clerk & Neon DB
+ */
+
 import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
@@ -22,6 +26,10 @@ interface ClerkDeletedUserData {
   object: "user";
   deleted: boolean;
 }
+
+/**
+ * POST Webhook Handler - Verifies and Processes Clerk Webhook Events
+ */
 
 export async function POST(req: Request) {
   // Get the headers - await the promise
@@ -95,6 +103,10 @@ export async function POST(req: Request) {
   return new Response("Webhook processed successfully", { status: 200 });
 }
 
+/**
+ * Create: Create user
+ */
+
 async function handleUserCreated(userData: ClerkUserData) {
   try {
     console.log("Creating user:", userData);
@@ -115,6 +127,10 @@ async function handleUserCreated(userData: ClerkUserData) {
     throw error;
   }
 }
+
+/**
+ * Update: Update user data
+ */
 
 async function handleUserUpdated(userData: ClerkUserData) {
   try {
@@ -137,6 +153,10 @@ async function handleUserUpdated(userData: ClerkUserData) {
     throw error;
   }
 }
+
+/**
+ * Update: Delete user data
+ */
 
 async function handleUserDeleted(userData: ClerkDeletedUserData) {
   try {

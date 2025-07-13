@@ -2,38 +2,11 @@
 import { getAllPosts } from "@/lib/actions/posts";
 import { getPostStats } from "@/lib/actions/reactions";
 import Link from "next/link";
-import PostEditor from "@/components/ui/PostEditor";
+import PostEditor from "@/components/ui/post/PostEditor";
 import Image from "next/image";
 import { MessageCircle, ChevronUp, ChevronDown } from "lucide-react";
 import { getCurrentUser } from "@/lib/actions/users";
-
-// Helper function to extract plain text from HTML content
-function extractPlainText(html: string): string {
-  return html
-    .replace(/<[^>]*>/g, "")
-    .replace(/&nbsp;/g, " ")
-    .trim();
-}
-
-// Helper function to truncate content
-function truncateContent(content: string, maxLength: number = 700): string {
-  const plainText = extractPlainText(content);
-  if (plainText.length <= maxLength) return plainText;
-  return plainText.substring(0, maxLength) + "...";
-}
-
-// Helper function to extract all images from HTML content
-function extractAllImages(html: string): string[] {
-  const imgMatches = html.match(/<img[^>]+src="([^"]+)"/g);
-  if (!imgMatches) return [];
-
-  return imgMatches
-    .map((match) => {
-      const srcMatch = match.match(/src="([^"]+)"/);
-      return srcMatch ? srcMatch[1] : "";
-    })
-    .filter(Boolean);
-}
+import { truncateContent, extractAllImages } from "@/lib/utils/helper";
 
 export default async function Blog() {
   const posts = await getAllPosts();
@@ -79,7 +52,7 @@ export default async function Blog() {
         ) : (
           postsWithStats.map((post) => {
             const images = extractAllImages(post.content);
-            const truncatedContent = truncateContent(post.content);
+            const truncatedContent = truncateContent(post.content, 700);
             const isNewPost =
               post.created_at &&
               (Date.now() - new Date(post.created_at).getTime()) / 1000 < 30;
