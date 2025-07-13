@@ -107,6 +107,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     return (
       <div className="max-w-5xl mx-auto px-4 py-8">
         {/* Navigation */}
+
+        <AuthGuard showPrompt={false}>
         <div className="mb-8">
           <Link
             href="/blogs"
@@ -128,6 +130,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             Back To Blogs
           </Link>
         </div>
+        </AuthGuard>
 
         {/* Post Header */}
         <header className="mb-8">
