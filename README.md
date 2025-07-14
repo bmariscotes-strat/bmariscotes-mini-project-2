@@ -42,6 +42,7 @@ Wryte is a vibrant blogging platform where writers can express themselves freely
 | UI Component           | [TipTap React](https://tiptap.dev/docs/editor/getting-started/install/react)                                 |
 | Media Service          | [Cloudinary](https://cloudinary.com/)                                                                        |
 | Authentication Service | [Clerk](https://clerk.com/nextjs-authentication)                                                             |
+| Version Managment      | [Semantic Versioning](https://semver.org/)                                                                   |
 | Fonts                  | Google Fonts via `next/font`                                                                                 |
 | Hosting                | [Vercel](https://vercel.com/)                                                                                |
 
