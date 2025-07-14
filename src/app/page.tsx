@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation";
 import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
 import Button from "@/components/ui/Button";
 import Image from "next/image";
 import Link from "next/link";
@@ -15,12 +14,12 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col background">
+    <div className="h-screen flex flex-col background overflow-hidden">
       <Header />
       {/* Main Content */}
-      <main className="px-4 py-12 sm:px-6 lg:px-8 flex-1">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <main className="flex-1 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
+        <div className="max-w-7xl mx-auto w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-2 items-center h-full">
             {/* Left Side - Illustration Area */}
             <div className="flex justify-center lg:justify-end">
               <div className="relative">
@@ -28,23 +27,24 @@ export default function LandingPage() {
                 <Image
                   src="/vectors/hand-writing.gif"
                   alt="Logo"
-                  width={600}
-                  height={600}
+                  width={500}
+                  height={500}
+                  className="lg:w-[600px] lg:h-[600px]"
                 />
               </div>
             </div>
 
             {/* Right Side - Content */}
             <div className="text-center lg:text-center">
-              <h1 className="baskervville text-5xl sm:text-6xl lg:text-8xl font-bold text-primary mb-6 animate-fade-in">
+              <h1 className="baskervville text-4xl sm:text-5xl lg:text-7xl xl:text-8xl font-bold text-primary mb-4 lg:mb-6 animate-fade-in">
                 Wryte.
               </h1>
 
-              <p className="text-xl sm:text-2xl geist font-medium tracking-wide mb-8 max-w-md mx-auto  text-center leading-relaxed">
+              <p className="text-lg sm:text-xl geist font-medium tracking-wide mb-6 lg:mb-8 max-w-md mx-auto text-center leading-relaxed">
                 The pen&apos;s yours. Leave your mark.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4 pt-2 justify-center lg:justify-center">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-center">
                 {/* Primary CTA Button - Accent filled */}
                 <Link href="/sign-up">
                   <Button
@@ -52,7 +52,7 @@ export default function LandingPage() {
                     style="filled"
                     size="lg"
                     onClick={handleGetStarted}
-                    className="geist font-bold tracking-wide"
+                    className="geist font-semibold tracking-wide"
                   >
                     Begin your first Wryte
                   </Button>
@@ -62,7 +62,6 @@ export default function LandingPage() {
           </div>
         </div>
       </main>
-      <Footer />
     </div>
   );
 }

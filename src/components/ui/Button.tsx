@@ -60,7 +60,7 @@ const getButtonClasses = (
         "border-gray-600 text-gray-600 hover:bg-gray-50 focus:ring-gray-200 hover:border-gray-700",
     },
     accent: {
-      filled: "bg-accent hover:bg-primary/50 focus:ring-pink-200",
+      filled: "bg-accent hover:bg-primary/50 focus:ring-pink-200 text-white",
       outlined:
         "border-pink-400 text-pink-600 hover:bg-pink-50 focus:ring-pink-200 hover:border-pink-500",
     },

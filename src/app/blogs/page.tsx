@@ -1,4 +1,3 @@
-// app/blogs/page.tsx
 import { getAllPosts } from "@/lib/actions/posts";
 import { getPostStats } from "@/lib/actions/reactions";
 import Link from "next/link";
@@ -10,7 +9,7 @@ import { truncateContent, extractAllImages } from "@/lib/utils/helper";
 
 export default async function Blog() {
   const posts = await getAllPosts();
-  const user = await getCurrentUser(); // Changed from getUserById(1)
+  const user = await getCurrentUser();
 
   // Sort posts latest to oldest
   const sortedPosts = posts.sort((a, b) => {

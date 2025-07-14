@@ -8,7 +8,7 @@ export default function SignUpPage() {
   return (
     <div className="min-h-screen flex flex-col justify-center">
       <Header />
-      <main className="px-4 py-12 sm:px-6 lg:px-8 flex-1">
+      <main className="px-4 py-8 sm:px-6 sm:py-4 md:py-12 lg:py-12 lg:px-8 flex-1">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <div className="text-center">
             <h1 className="text-3xl font-bold text-primary mb-2">
@@ -19,7 +19,7 @@ export default function SignUpPage() {
             </p>
           </div>
 
-          <div className="bg-white py-8 sm:rounded-lg sm:px-10">
+          <div className="bg-white py-2 md:py-8 lg:py-8 sm:rounded-lg sm:px-10">
             {/* Clerk Sign Up */}
             <SignUp
               afterSignUpUrl="/blogs"
