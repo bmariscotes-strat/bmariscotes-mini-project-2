@@ -8,7 +8,6 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 const isProtectedRoute = createRouteMatcher([
   "/blogs/new", // Creating new posts
   "/blogs/edit/(.*)", // Editing posts
-  "/dashboard(.*)", // Dashboard routes
   "/profile(.*)", // Profile routes
 ]);
 
