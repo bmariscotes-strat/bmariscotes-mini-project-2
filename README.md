@@ -14,7 +14,7 @@
 
 #### ˚ʚ♡ɞ˚ ‎ [View Live Site](https://wryte-blog.vercel.app)
 
-Wryte is a vibrant blogging platform where writers can express themselves freely and build meaningful connections with like-minded individuals. Created as a safe space for creative expression, Wryte fosters a community where diverse voices, shared values, and common interests come together.
+Wryte is a vibrant blogging platform where writers can express themselves freely and build meaningful connections with like-minded individuals. Created as a safe space for creative expression, Wryte welcomes a community where diverse voices, shared values, and common interests come together.
 <br>
 
 ## 🌟 Features
