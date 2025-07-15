@@ -114,7 +114,7 @@ export async function createComment(
 
     // Invalidate caches to show new comment immediately
     revalidatePath(`/posts/${postId}`); // Specific post page
-    revalidatePath("/"); // Home page (may show comment counts)
+    revalidatePath("/"); // Home page (show comment counts)
 
     return comment;
   } catch (error) {

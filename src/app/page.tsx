@@ -41,7 +41,7 @@ export default function LandingPage() {
                 Wryte.
               </h1>
 
-              <p className="text-md sm:text-xl md:text-xl lg:text-xl   geist font-medium tracking-wide mb-6 lg:mb-8 max-w-md mx-auto text-center leading-relaxed">
+              <p className="text-md sm:text-xl md:text-xl lg:text-xl geist font-medium tracking-wide mb-6 lg:mb-8 max-w-md mx-auto text-center leading-relaxed">
                 The pen&apos;s yours. Leave your mark.
               </p>
 

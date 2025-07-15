@@ -275,7 +275,6 @@ export async function searchPostsBySlug(slugPattern: string) {
     console.log("searchPostsBySlug - searching for pattern:", slugPattern);
 
     // Get all posts and filter by slug pattern
-    // NOTE: This is inefficient for large datasets - consider using SQL LIKE queries
     const allPosts = await db.select().from(posts);
     const matchingPosts = allPosts.filter(
       (post) =>
