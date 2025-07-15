@@ -6,7 +6,7 @@
 </h1>
 
   <a href="https://github.com/bmariscotes-strat/bmariscotes-mini-project-2/releases">
-    <img src="https://img.shields.io/github/v/release/bmariscotes-strat/bmariscotes-mini-project-1" alt="GitHub release" />
+    <img src="https://img.shields.io/github/v/release/bmariscotes-strat/bmariscotes-mini-project-2" alt="GitHub release" />
   <a href="https://wryte-blog.vercel.app">
     <img src="https://img.shields.io/badge/Live%20Site-online-brightgreen" alt="live site" />
   </a>
